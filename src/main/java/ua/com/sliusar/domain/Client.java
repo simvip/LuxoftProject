@@ -11,7 +11,7 @@ public class Client {
     /**
      * Id client in DB.
      */
-    private long id;
+    private Double id;
     /**
      * Name client in DB.
      */
@@ -40,18 +40,18 @@ public class Client {
     /**
      * Get client`s id.
      *
-     * @return Long
+     * @return Double
      */
-    public long getId() {
+    public Double getId() {
         return id;
     }
 
     /**
      * Set client`s id.
      *
-     * @param id long
+     * @param id Double
      */
-    public void setId(long id) {
+    public void setId(Double id) {
         this.id = id;
     }
 

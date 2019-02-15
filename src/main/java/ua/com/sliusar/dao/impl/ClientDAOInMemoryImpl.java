@@ -4,9 +4,9 @@ import ua.com.sliusar.dao.ClientDAO;
 import ua.com.sliusar.domain.Client;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class ClientDAOInMemoryImpl
@@ -16,36 +16,29 @@ import java.util.concurrent.ConcurrentHashMap;
  * @project MyLuxoftProject
  */
 public class ClientDAOInMemoryImpl implements ClientDAO {
-    private final Map<Long, Client> clientMap;
+    private final Map<Double, Client> clientMap;
 
     public ClientDAOInMemoryImpl() {
-        this.clientMap = new ConcurrentHashMap<>();
+        this.clientMap = new HashMap<>();
     }
 
-    public boolean saveOrUpdateClient(Client client) {
-        if (client.getId() == 0) {
-            client.setId(this.clientMap.values().size() + 1);
+    @Override
+    public boolean saveClient(Client client) {
+        if (client.getId() == null) {
+            client.setId((double) (this.clientMap.values().size() + 1));
         }
         clientMap.put(client.getId(), client);
         return findClient(client.getId()) != null;
     }
 
     @Override
-    public boolean delete(long id) {
-        if (clientMap.containsKey(id)) {
-            clientMap.remove(id);
-            System.out.println("Client delete");
-            return true;
-        }
-        return false;
+    public boolean delete(Double id) {
+        return clientMap.remove(id) != null;
     }
 
     @Override
-    public Client findClient(long id) {
-        if (clientMap.containsKey(id)) {
-            return clientMap.get(id);
-        }
-        return null;
+    public Client findClient(Double id) {
+        return clientMap.get(id);
     }
 
     @Override

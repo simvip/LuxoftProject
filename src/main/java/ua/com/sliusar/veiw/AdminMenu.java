@@ -72,13 +72,7 @@ public class AdminMenu {
     private void modifyClient() throws IOException {
         System.out.println("Input id client");
         String id = br.readLine();
-        Client client = clientService.findClient(id);
-        if (client != null) {
-            showUpdateMenu();
-        } else {
-            System.out.println("Client with such id " + id + " doesn`t find");
-            showUpdateMenu();
-        }
+        showUpdateMenu();
         switch (br.readLine()) {
             case "1":
                 System.out.println("Input name");
@@ -96,7 +90,7 @@ public class AdminMenu {
                     }
                 });
                 break;
-            case "3": // Return
+            case "3":
                 showMainMenu();
                 break;
             default:
@@ -107,6 +101,7 @@ public class AdminMenu {
 
     private void listAllClients() {
         List<Client> all = clientService.findAll();
+        if (all.size() == 0) System.out.println("List of clients is empty");
         for (Client client : all) {
             System.out.println(client);
         }

@@ -18,7 +18,7 @@ public interface ClientDAO {
      * @param client Client
      * @return Boolean
      */
-    boolean saveOrUpdateClient(Client client);
+    boolean saveClient(Client client);
 
     /**
      * Method delete client in DB by id.
@@ -26,7 +26,7 @@ public interface ClientDAO {
      * @param id Long
      * @return Boolean
      */
-    boolean delete(long id);
+    boolean delete(Double id);
 
     /**
      * Method finds client in DB and returns Client if it finds one by id
@@ -35,7 +35,7 @@ public interface ClientDAO {
      * @param id
      * @return
      */
-    Client findClient(long id);
+    Client findClient(Double id);
 
     /**
      * Method finds All clients in DB.

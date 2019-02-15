@@ -20,7 +20,7 @@ public interface ClientService {
      * @param surname String
      * @param phone   String
      */
-    boolean createClient(String name, String surname, String phone);
+    void createClient(String name, String surname, String phone);
 
     /**
      * Method updates parameters of client.
@@ -28,7 +28,7 @@ public interface ClientService {
      * @param id           Long
      * @param updateFields Map
      */
-    boolean updateClient(String id, Map<String, String> updateFields);
+    void updateClient(String id, Map<String, String> updateFields);
 
     /**
      * Method deletes client by his ID.
@@ -36,7 +36,7 @@ public interface ClientService {
      * @param id long
      * @return Boolean
      */
-    boolean deleteClient(String id);
+    void deleteClient(String id);
 
     /**
      * Method finds the Client in DB by his ID, if the Client will not be found

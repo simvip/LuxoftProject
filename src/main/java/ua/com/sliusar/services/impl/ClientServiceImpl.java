@@ -20,16 +20,19 @@ public class ClientServiceImpl implements ClientService {
     private Client client;
 
     @Override
-    public boolean createClient(String name, String surname, String phone) {
+    public void createClient(String name, String surname, String phone) {
         Client client = new Client(name, surname, phone);
-        return clientDAO.saveOrUpdateClient(client);
+        if (clientDAO.saveClient(client)){
+            System.out.println("Client was success created");
+        }
     }
 
     @Override
-    public boolean updateClient(String id, Map<String, String> updateFields) {
-        client = clientDAO.findClient(Integer.valueOf(id));
+    public void updateClient(String id, Map<String, String> updateFields) {
+        client = clientDAO.findClient(Double.valueOf(id));
         if (client == null) {
-            return false;
+            System.out.println("Client with such id " + id + " doesn`t find");
+            return;
         }
         for (Map.Entry<String, String> pair : updateFields.entrySet()) {
             switch (pair.getKey()) {
@@ -41,20 +44,25 @@ public class ClientServiceImpl implements ClientService {
                     break;
             }
         }
-        clientDAO.saveOrUpdateClient(client);
-        return true;
+        if (clientDAO.saveClient(client)){
+            System.out.println("Client was successes updated");
+        } else {
+            System.out.println("Update was crushed");
+        }
     }
 
     @Override
-    public boolean deleteClient(String id) {
-        clientDAO.delete(Long.valueOf(id));
-        return clientDAO.findClient(Long.valueOf(id)) != null;
+    public void deleteClient(String id) {
+        if (clientDAO.delete(Double.valueOf(id))){
+            System.out.println("Client was successes deleted");
+        } else {
+            System.out.println("Client wasn`t deleted");
+        }
     }
 
     @Override
     public Client findClient(String id) {
-        clientDAO.findClient(Integer.valueOf(id));
-        return null;
+        return clientDAO.findClient(Double.valueOf(id));
     }
 
     @Override
