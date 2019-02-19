@@ -145,6 +145,14 @@ public class Client {
         this.age = age;
     }
 
+    public Client(String name, String surname, String phone, String email, int age) {
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.email = email;
+        this.age = age;
+    }
+
     /**
      * Special case of constructor.
      *

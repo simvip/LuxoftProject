@@ -17,18 +17,32 @@ import java.util.Map;
  */
 public class ClientDAOInMemoryImpl implements ClientDAO {
     private final Map<Double, Client> clientMap;
+    private static volatile ClientDAOInMemoryImpl instance;
 
-    public ClientDAOInMemoryImpl() {
+    public static ClientDAOInMemoryImpl getInstance(){
+        ClientDAOInMemoryImpl localInstance = instance;
+        if (localInstance==null){
+            synchronized (ClientDAOInMemoryImpl.class){
+                localInstance =instance;
+                if (localInstance==null){
+                    instance = localInstance = new ClientDAOInMemoryImpl();
+                }
+            }
+        }
+        return localInstance;
+    }
+
+    private ClientDAOInMemoryImpl() {
         this.clientMap = new HashMap<>();
     }
 
     @Override
-    public boolean saveClient(Client client) {
+    public boolean createOrUpdate(Client client) {
         if (client.getId() == null) {
             client.setId((double) (this.clientMap.values().size() + 1));
         }
         clientMap.put(client.getId(), client);
-        return findClient(client.getId()) != null;
+        return findById(client.getId()) != null;
     }
 
     @Override
@@ -37,12 +51,12 @@ public class ClientDAOInMemoryImpl implements ClientDAO {
     }
 
     @Override
-    public Client findClient(Double id) {
+    public Client findById(Double id) {
         return clientMap.get(id);
     }
 
     @Override
-    public List<Client> findAllClients() {
+    public List<Client> findAll() {
         return new ArrayList<>(this.clientMap.values());
     }
 }

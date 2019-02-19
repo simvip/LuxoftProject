@@ -2,9 +2,6 @@ package ua.com.sliusar.services;
 
 import ua.com.sliusar.domain.Client;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Class ClientService
  *
@@ -12,7 +9,7 @@ import java.util.Map;
  * 2/14/19
  * @project MyLuxoftProject
  */
-public interface ClientService {
+public interface ClientService extends CrudService<Client>{
     /**
      * Method creates client by a number of parameters: name,surname and phone.
      *
@@ -21,36 +18,5 @@ public interface ClientService {
      * @param phone   String
      */
     void createClient(String name, String surname, String phone);
-
-    /**
-     * Method updates parameters of client.
-     *
-     * @param id           Long
-     * @param updateFields Map
-     */
-    void updateClient(String id, Map<String, String> updateFields);
-
-    /**
-     * Method deletes client by his ID.
-     *
-     * @param id long
-     * @return Boolean
-     */
-    void deleteClient(String id);
-
-    /**
-     * Method finds the Client in DB by his ID, if the Client will not be found
-     * there is return NULL, otherwise it returns link on Client.
-     *
-     * @param id
-     * @return
-     */
-    Client findClient(String id);
-
-    /**
-     * Method returns all clients from DB.
-     *
-     * @return List
-     */
-    List<Client> findAll();
+    void createClient(String name, String surname, String phone, String email, int age);
 }

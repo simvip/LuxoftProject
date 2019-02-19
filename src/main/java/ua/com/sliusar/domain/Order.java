@@ -10,7 +10,40 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 public class Order {
-    private long id;
-    private Client client;
+    private Double id;
+    private Double clientID;
     private List<Product> product;
+
+    public Double getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", clientID=" + clientID +
+                ", product=" + product +
+                '}';
+    }
+
+    public void setId(Double id) {
+        this.id = id;
+    }
+
+    public Double getClientID() {
+        return clientID;
+    }
+
+    public void setClientID(Double clientID) {
+        this.clientID = clientID;
+    }
+
+    public List<Product> getProduct() {
+        return product;
+    }
+
+    public void setProduct(List<Product> product) {
+        this.product = product;
+    }
 }

@@ -23,33 +23,33 @@ public class ClientDAOTest {
 
     @Before
     public void setUp() throws Exception {
-        dao = new ClientDAOInMemoryImpl();
+        dao = ClientDAOInMemoryImpl.getInstance();
         client1 = new Client("Dude", "Franklin", "+888888888");
         client2 = new Client("Stas", "Kosmos", "+7777777");
     }
 
     @Test
     public void whenWeSaveClientWeExpectTrue() {
-        assertTrue(dao.saveClient(client1));
+        assertTrue(dao.createOrUpdate(client1));
     }
 
     @Test
     public void whenWeDeleteClientWeExpectTrue() {
-        dao.saveClient(client1);
+        dao.createOrUpdate(client1);
         assertTrue(dao.delete(client1.getId()));
     }
 
     @Test
     public void whenWeFindClientByIdWeExpectGetClientWithSameId() {
-        dao.saveClient(client1);
-        Client findClient = dao.findClient(client1.getId());
+        dao.createOrUpdate(client1);
+        Client findClient = dao.findById(client1.getId());
         assertThat(client1,is(findClient));
     }
 
     @Test
     public void whenWeFindAllClientsWeGetAllClientsInBase() {
-        dao.saveClient(client1);
-        dao.saveClient(client2);
-        assertTrue(dao.findAllClients().size()==2);
+        dao.createOrUpdate(client1);
+        dao.createOrUpdate(client2);
+        assertTrue(dao.findAll().size()==2);
     }
 }

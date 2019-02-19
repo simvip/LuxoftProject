@@ -2,7 +2,6 @@ package ua.com.sliusar.veiw;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Class MainMenu
@@ -12,12 +11,17 @@ import java.io.InputStreamReader;
  * @project MyLuxoftProject
  */
 public class MainMenu {
-    public boolean isRunning = false;
-    private final BufferedReader br = new BufferedReader(
-            new InputStreamReader(System.in)
-    );
-    private final AdminMenu adminMenu = new AdminMenu(this);
-    private final ClientMenu clientMenu = new ClientMenu(this);
+
+    public static boolean isRunning = false;
+    private BufferedReader br;
+    private AdminMenu adminMenu;
+    private ClientMenu clientMenu;
+
+    public MainMenu(BufferedReader br, AdminMenu adminMenu, ClientMenu clientMenu) {
+        this.br = br;
+        this.adminMenu = adminMenu;
+        this.clientMenu = clientMenu;
+    }
 
     public void showMenu() throws IOException {
         isRunning = true;
@@ -31,10 +35,10 @@ public class MainMenu {
 
             switch (br.readLine()) {
                 case "1":
-                    adminMenu.show();
+                    adminMenu.showMainMenu();
                     break;
                 case "2":
-                    clientMenu.show();
+                    clientMenu.showMainMenu();
                     break;
                 case "0":
                     System.out.println("Exit");

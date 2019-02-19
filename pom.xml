@@ -6,7 +6,6 @@
     <groupId>com.luxoft</groupId>
     <artifactId>ivan.sliusar.ua</artifactId>
     <version>1.0</version>
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
