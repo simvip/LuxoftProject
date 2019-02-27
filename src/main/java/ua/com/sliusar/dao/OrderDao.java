@@ -5,20 +5,20 @@ import ua.com.sliusar.domain.Order;
 import java.util.List;
 
 /**
- * Class OrderDAO
+ * Class OrderDao
  *
  * @author create by ivanslusar
  * 2/15/19
  * @project MyLuxoftProject
  */
-public interface OrderDAO extends CrudDAO<Order> {
+public interface OrderDao extends CrudDao<Order> {
 
     /**
      * Method finds Clients orders.
      *
-     * @param clientID Double
+     * @param clientID Long
      * @return List
      */
-    List<Order> findAllOrderOfClient(Double clientID);
+    List<Order> findAllOrderOfClient(Long clientID);
 
 }

@@ -1,6 +1,6 @@
 package ua.com.sliusar.services.impl;
 
-import ua.com.sliusar.dao.ProductDAO;
+import ua.com.sliusar.dao.ProductDao;
 import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.exceptions.BusinessException;
 import ua.com.sliusar.services.ProductService;
@@ -18,10 +18,10 @@ import java.util.Map;
  * @project MyLuxoftProject
  */
 public class ProductServiceImpl implements ProductService {
-    private ProductDAO productDAO;
+    private ProductDao productDAO;
     private ValidationService validationService;
 
-    public ProductServiceImpl(ProductDAO productDAO, ValidationService validationService) {
+    public ProductServiceImpl(ProductDao productDAO, ValidationService validationService) {
         this.productDAO = productDAO;
         this.validationService = validationService;
     }
@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void update(String id, Map<String, String> updateFields) {
-        Product product = productDAO.findById(Double.valueOf(id));
+        Product product = productDAO.findById(Long.valueOf(id));
         if (product == null) {
             System.out.println("Product with such id " + id + " doesn`t find");
             return;
@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(String id) {
-        if (productDAO.delete(Double.valueOf(id))){
+        if (productDAO.delete(Long.valueOf(id))){
             System.out.println("Product was successes deleted");
         } else {
             System.out.println("Product wasn`t deleted");
@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String id) {
-        return productDAO.findById(Double.valueOf(id));
+        return productDAO.findById(Long.valueOf(id));
     }
 
     @Override

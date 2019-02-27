@@ -1,6 +1,6 @@
 package ua.com.sliusar.services.impl;
 
-import ua.com.sliusar.dao.ClientDAO;
+import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.domain.Client;
 import ua.com.sliusar.exceptions.BusinessException;
 import ua.com.sliusar.services.ClientService;
@@ -17,10 +17,10 @@ import java.util.Map;
  * @project MyLuxoftProject
  */
 public class ClientServiceImpl implements ClientService {
-    private ClientDAO clientDAO;
+    private ClientDao clientDAO;
     private ValidationService validationService;
 
-    public ClientServiceImpl(ClientDAO clientDAO, ValidationService validationService) {
+    public ClientServiceImpl(ClientDao clientDAO, ValidationService validationService) {
         this.clientDAO = clientDAO;
         this.validationService = validationService;
     }
@@ -47,7 +47,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void update(String id, Map<String, String> updateFields) {
-        Client client = clientDAO.findById(Double.valueOf(id));
+        Client client = clientDAO.findById(Long.valueOf(id));
         if (client == null) {
             System.out.println("Client with such id " + id + " doesn`t find");
             return;
@@ -71,7 +71,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void delete(String id) {
-        if (clientDAO.delete(Double.valueOf(id))) {
+        if (clientDAO.delete(Long.valueOf(id))) {
             System.out.println("Client was successes deleted");
         } else {
             System.out.println("Client wasn`t deleted");
@@ -80,7 +80,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client findById(String id) {
-        return clientDAO.findById(Double.valueOf(id));
+        return clientDAO.findById(Long.valueOf(id));
     }
 
     @Override

@@ -2,7 +2,7 @@ package ua.com.sliusar.dao;
 
 import org.junit.Before;
 import org.junit.Test;
-import ua.com.sliusar.dao.impl.ClientDAOInMemoryImpl;
+import ua.com.sliusar.dao.impl.ClientDaoInMemoryImpl;
 import ua.com.sliusar.domain.Client;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -10,20 +10,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
 
 /**
- * Class ClientDAOTest
+ * Class ClientDaoTest
  *
  * @author create by ivanslusar
  * 2/15/19
  * @project MyLuxoftProject
  */
-public class ClientDAOTest {
-    private static ClientDAO dao;
+public class ClientDaoTest {
+    private static ClientDao dao;
     public Client client1;
     public Client client2;
 
     @Before
     public void setUp() throws Exception {
-        dao = ClientDAOInMemoryImpl.getInstance();
+        dao = ClientDaoInMemoryImpl.getInstance();
         client1 = new Client("Dude", "Franklin", "+888888888");
         client2 = new Client("Stas", "Kosmos", "+7777777");
     }

@@ -1,11 +1,11 @@
 package ua.com.sliusar;
 
-import ua.com.sliusar.dao.ClientDAO;
-import ua.com.sliusar.dao.OrderDAO;
-import ua.com.sliusar.dao.ProductDAO;
-import ua.com.sliusar.dao.impl.ClientDAOInMemoryImpl;
-import ua.com.sliusar.dao.impl.OrderDAOInMemoryImpl;
-import ua.com.sliusar.dao.impl.ProductDAOInMemoryImpl;
+import ua.com.sliusar.dao.ClientDao;
+import ua.com.sliusar.dao.OrderDao;
+import ua.com.sliusar.dao.ProductDao;
+import ua.com.sliusar.dao.impl.ClientDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.OrderDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.ProductDaoInMemoryImpl;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Class ClientDAOInMemoryImpl
+ * Class ClientDaoInMemoryImpl
  *
  * @author create by ivanslusar
  * 2/14/19
@@ -29,7 +29,7 @@ import java.io.InputStreamReader;
  */
 public class App {
     /**
-     * 1. Реализовать ClientDAO singleton
+     * 1. Реализовать ClientDao singleton
      * 2. Написать ряд валидаторов: email,age,phone+3(xxx)xxx-xx-xx проверить код оператора 097 050
      *
      * @param args
@@ -38,14 +38,14 @@ public class App {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        OrderDAO orderDAO = new OrderDAOInMemoryImpl();
-        ClientDAO clientDAO = ClientDAOInMemoryImpl.getInstance();
-        ProductDAO productDAO = new ProductDAOInMemoryImpl();
+        OrderDao orderDAO = new OrderDaoInMemoryImpl();
+        ClientDao clientDAO = ClientDaoInMemoryImpl.getInstance();
+        ProductDao productDAO = new ProductDaoInMemoryImpl();
 
         ValidationService validationService = new ValidationServiceImp();
         ProductService productService = new ProductServiceImpl(productDAO,validationService);
         ClientService clientService = new ClientServiceImpl(clientDAO, validationService);
-        OrderService orderService = new OrderServiceImpl(orderDAO, validationService);
+        OrderService orderService = new OrderServiceImpl(orderDAO,productService);
 
         ProductMenu productMenu = new ProductMenu(br, productService);
         OrderMenu orderMenu = new OrderMenu(br, orderService);

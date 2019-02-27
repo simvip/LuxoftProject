@@ -3,18 +3,18 @@ package ua.com.sliusar.dao;
 import java.util.List;
 
 /**
- * Class CrudDAO
+ * Class CrudDao
  *
  * @author create by ivanslusar
  * 2/15/19
  * @project MyLuxoftProject
  */
-public interface CrudDAO<T> {
+public interface CrudDao<T> {
     boolean createOrUpdate(T value);
 
-    boolean delete(Double id);
+    boolean delete(Long id);
 
-    T findById(Double id);
+    T findById(Long id);
 
     List<T> findAll();
 }

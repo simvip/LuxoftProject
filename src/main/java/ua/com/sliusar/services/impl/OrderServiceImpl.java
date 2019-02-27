@@ -1,9 +1,10 @@
 package ua.com.sliusar.services.impl;
 
-import ua.com.sliusar.dao.OrderDAO;
+import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.domain.Order;
+import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.services.OrderService;
-import ua.com.sliusar.validators.ValidationService;
+import ua.com.sliusar.services.ProductService;
 
 import java.util.List;
 import java.util.Map;
@@ -16,12 +17,12 @@ import java.util.Map;
  * @project MyLuxoftProject
  */
 public class OrderServiceImpl implements OrderService {
-    private OrderDAO orderDAO;
-    private ValidationService validationService;
+    private OrderDao orderDAO;
+    private ProductService productService;
 
-    public OrderServiceImpl(OrderDAO orderDAO, ValidationService validationService) {
+    public OrderServiceImpl(OrderDao orderDAO, ProductService productService) {
         this.orderDAO = orderDAO;
-        this.validationService = validationService;
+        this.productService = productService;
     }
 
     @Override
@@ -34,19 +35,33 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void update(String id, Map<String, String> updateFields) {
-        Order order = orderDAO.findById(Double.valueOf(id));
+        Order order = orderDAO.findById(Long.valueOf(id));
         if (order == null) {
             System.out.println("Order with such id " + id + " doesn`t find");
             return;
         }
         for (Map.Entry<String, String> pair : updateFields.entrySet()) {
             switch (pair.getKey()) {
-                case "name":
-//                    order.setName(pair.getValue());
+                case "clientId":
+                    order.setClientID(Long.valueOf(pair.getValue()));
                     break;
-                case "price":
-//                    order.setPhone(pair.getValue());
+                case "idProductAddToOrder":
+                    Product foundProduct = productService.findById(pair.getValue());
+                    if (foundProduct == null) {
+                        System.out.println("Was not found Product with such ID");
+                    } else {
+                        order.getProduct().add(foundProduct);
+                    }
                     break;
+                case "idProductDeleteFromOrder":
+                    Product foundProduct2 = productService.findById(pair.getValue());
+                    if (foundProduct2 == null) {
+                        System.out.println("Was not found Product with such ID");
+                    } else {
+                        order.getProduct().remove(foundProduct2);
+                    }
+                    break;
+
             }
         }
 //        if (orderDAO.createOrUpdate(client)) {
@@ -58,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void delete(String id) {
-        if (orderDAO.delete(Double.valueOf(id))) {
+        if (orderDAO.delete(Long.valueOf(id))) {
             System.out.println("Order was successes deleted");
         } else {
             System.out.println("Order wasn`t deleted");
@@ -67,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(String id) {
-        return orderDAO.findById(Double.valueOf(id));
+        return orderDAO.findById(Long.valueOf(id));
     }
 
     @Override

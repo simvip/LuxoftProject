@@ -37,31 +37,49 @@ public class OrderMenu {
         String id = br.readLine();
         updateMenu();
         switch (br.readLine()) {
-            case "1":
-                System.out.println("Input new name");
+            case "1": //change client ID
+                System.out.println("Input new client ID");
                 orderService.update(id, new HashMap<String, String>() {
                     {
-                        put("name", br.readLine());
+                        put("clientId", br.readLine());
                     }
                 });
                 break;
-            case "2":
-                System.out.println("Input new price");
+            case "2":// Add Product
+                System.out.println("Input ID product");
                 orderService.update(id, new HashMap<String, String>() {
                     {
-                        put("price", br.readLine());
+                        put("idProductAddToOrder", br.readLine());
                     }
                 });
                 break;
-            case "3":
-                mainMenu();
+            case "3":// Delete Product
+                System.out.println("Input ID Product");
+                orderService.update(id, new HashMap<String, String>() {
+                    {
+                        put("idProductDeleteFromOrder", br.readLine());
+                    }
+                });
                 break;
             case "9":
+                mainMenu();
+                break;
+            case "0":
                 break;
             default:
                 updateMenu();
                 System.out.println("Wrong menu");
         }
+    }
+
+    private void updateMenu() {
+        System.out.println("------------------");
+        System.out.println("What do you want to update?");
+        System.out.println("1. Client ID");
+        System.out.println("2. Add product");
+        System.out.println("3. Delete product");
+        System.out.println("0. Return");
+        System.out.println("------------------");
     }
 
     private void listAllOrder() {
@@ -96,15 +114,6 @@ public class OrderMenu {
         System.out.println("3. List all orders");
         System.out.println("9. Return main menu");
         System.out.println("0. Exit");
-    }
-
-    private void updateMenu() {
-        System.out.println("------------------");
-        System.out.println("What do you want to update?");
-        System.out.println("1. Name");
-        System.out.println("2. Price");
-        System.out.println("0. Return");
-        System.out.println("------------------");
     }
 
     public void showMainMenu() throws IOException {

@@ -1,6 +1,6 @@
 package ua.com.sliusar.dao.impl;
 
-import ua.com.sliusar.dao.OrderDAO;
+import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.domain.Order;
 
 import java.util.ArrayList;
@@ -9,35 +9,36 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class OrderDAOInMemoryImpl
+ * Class OrderDaoInMemoryImpl
  *
  * @author create by ivanslusar
  * 2/15/19
  * @project MyLuxoftProject
  */
-public class OrderDAOInMemoryImpl implements OrderDAO {
-    private final Map<Double, Order> orderMap;
+public class OrderDaoInMemoryImpl implements OrderDao {
+    private final Map<Long, Order> orderMap;
+    private long count = 0;
 
-    public OrderDAOInMemoryImpl() {
+    public OrderDaoInMemoryImpl() {
         this.orderMap = new HashMap<>();
     }
 
     @Override
     public boolean createOrUpdate(Order order) {
         if (order.getId() == null) {
-            order.setId((double) (this.orderMap.values().size() + 1));
+            order.setId(++count);
         }
         orderMap.put(order.getId(), order);
-        return findById(order.getId()) != null;
+        return true;
     }
 
     @Override
-    public boolean delete(Double id) {
+    public boolean delete(Long id) {
         return orderMap.remove(id) != null;
     }
 
     @Override
-    public Order findById(Double id) {
+    public Order findById(Long id) {
         return orderMap.get(id);
     }
 
@@ -47,10 +48,10 @@ public class OrderDAOInMemoryImpl implements OrderDAO {
     }
 
     @Override
-    public List<Order> findAllOrderOfClient(Double clientID) {
+    public List<Order> findAllOrderOfClient(Long clientID) {
         List<Order> rezultList = new ArrayList<>();
         for (Order order : orderMap.values()) {
-            if (order.getClientID() == clientID) {
+            if (clientID.equals(order.getClientID())) {
                 rezultList.add(order);
             }
         }

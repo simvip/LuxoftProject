@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * @project MyLuxoftProject
  */
 public class Product {
-    private Double id;
+    private Long id;
     private String name;
     private BigDecimal price;
 
@@ -28,11 +28,11 @@ public class Product {
                 '}';
     }
 
-    public Double getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Double id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

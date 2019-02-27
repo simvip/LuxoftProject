@@ -10,11 +10,11 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 public class Order {
-    private Double id;
-    private Double clientID;
+    private Long id;
+    private Long clientID;
     private List<Product> product;
 
-    public Double getId() {
+    public Long getId() {
         return id;
     }
 
@@ -27,15 +27,15 @@ public class Order {
                 '}';
     }
 
-    public void setId(Double id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Double getClientID() {
+    public Long getClientID() {
         return clientID;
     }
 
-    public void setClientID(Double clientID) {
+    public void setClientID(Long clientID) {
         this.clientID = clientID;
     }
 
