@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * @project MyLuxoftProject
  */
 public class OrderDaoInMemoryImpl implements OrderDao {
-    public final Map<Long, Order> orderMap;
+    private final Map<Long, Order> orderMap;
     private long count = 0;
 
     public OrderDaoInMemoryImpl() {
