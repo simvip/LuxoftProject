@@ -52,7 +52,13 @@ public class ProductServiceImpl implements ProductService {
                     product.setName(pair.getValue());
                     break;
                 case "price":
-                    product.setPrice(new BigDecimal(pair.getValue()));
+                    String price = pair.getValue();
+                    try {
+                        validationService.validateBigВecimal(price);
+                        product.setPrice(new BigDecimal(price));
+                    } catch (BusinessException e) {
+                        e.printStackTrace();
+                    }
                     break;
             }
         }

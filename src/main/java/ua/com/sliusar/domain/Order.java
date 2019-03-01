@@ -18,6 +18,11 @@ public class Order {
         return id;
     }
 
+    public Order(Long clientID, List<Product> product) {
+        this.clientID = clientID;
+        this.product = product;
+    }
+
     @Override
     public String toString() {
         return "Order{" +

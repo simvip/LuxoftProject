@@ -6,6 +6,7 @@ import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +27,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void create(String name, String price) {
-        Order order = new Order();
+    public void create(String clientId, String productId) {
+        Order order = new Order(
+                Long.valueOf(clientId),
+                Arrays.asList(productService.findById(productId)
+                )
+        );
         if (orderDAO.createOrUpdate(order)) {
             System.out.println("Order was success created");
         }
@@ -64,11 +69,6 @@ public class OrderServiceImpl implements OrderService {
 
             }
         }
-//        if (orderDAO.createOrUpdate(client)) {
-//            System.out.println("Client was successes updated");
-//        } else {
-//            System.out.println("Update was crushed");
-//        }
     }
 
     @Override
