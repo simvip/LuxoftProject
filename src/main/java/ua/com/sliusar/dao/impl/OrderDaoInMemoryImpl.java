@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Class OrderDaoInMemoryImpl
@@ -49,12 +50,8 @@ public class OrderDaoInMemoryImpl implements OrderDao {
 
     @Override
     public List<Order> findAllOrderOfClient(Long clientID) {
-        List<Order> rezultList = new ArrayList<>();
-        for (Order order : orderMap.values()) {
-            if (clientID.equals(order.getClientID())) {
-                rezultList.add(order);
-            }
-        }
-        return rezultList;
+        return orderMap.values().stream()
+                .filter(client -> client.getClientID().equals(clientID))
+                .collect(Collectors.toList());
     }
 }

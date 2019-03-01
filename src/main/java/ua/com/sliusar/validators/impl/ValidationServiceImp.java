@@ -20,7 +20,7 @@ public class ValidationServiceImp implements ValidationService {
 
     @Override
     public void validateEmail(String inputValue) throws BusinessException {
-        if (!inputValue.equals("^\\w+@[a-zA-Z_]+?\\.[a-zA-Z]{2,3}$")){
+        if (!inputValue.matches("^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$")){
             throw new BusinessException("Incorrect email");
         }
     }
