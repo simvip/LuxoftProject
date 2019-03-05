@@ -11,4 +11,6 @@ import ua.com.sliusar.domain.Client;
  */
 public interface ClientDao extends CrudDao<Client> {
 
+    Client findByPhone(String phoneNumber);
+
 }

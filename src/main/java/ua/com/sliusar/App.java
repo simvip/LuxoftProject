@@ -3,9 +3,9 @@ package ua.com.sliusar;
 import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.dao.ProductDao;
-import ua.com.sliusar.dao.impl.ClientDaoInMemoryImpl;
-import ua.com.sliusar.dao.impl.OrderDaoInMemoryImpl;
-import ua.com.sliusar.dao.impl.ProductDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.inMemory.ClientDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.inMemory.OrderDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.inMemory.ProductDaoInMemoryImpl;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
@@ -45,7 +45,7 @@ public class App {
         ValidationService validationService = new ValidationServiceImp();
         ProductService productService = new ProductServiceImpl(productDAO,validationService);
         ClientService clientService = new ClientServiceImpl(clientDAO, validationService);
-        OrderService orderService = new OrderServiceImpl(orderDAO,productService);
+        OrderService orderService = new OrderServiceImpl(orderDAO,productService,clientService);
 
         ProductMenu productMenu = new ProductMenu(br, productService);
         OrderMenu orderMenu = new OrderMenu(br, orderService);

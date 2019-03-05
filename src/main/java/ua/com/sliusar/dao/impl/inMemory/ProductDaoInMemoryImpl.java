@@ -1,4 +1,4 @@
-package ua.com.sliusar.dao.impl;
+package ua.com.sliusar.dao.impl.inMemory;
 
 import ua.com.sliusar.dao.ProductDao;
 import ua.com.sliusar.domain.Product;

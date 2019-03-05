@@ -3,6 +3,7 @@ package ua.com.sliusar.services.impl;
 import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.domain.Order;
 import ua.com.sliusar.domain.Product;
+import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
 
@@ -20,16 +21,18 @@ import java.util.Map;
 public class OrderServiceImpl implements OrderService {
     private OrderDao orderDAO;
     private ProductService productService;
+    private ClientService clientService;
 
-    public OrderServiceImpl(OrderDao orderDAO, ProductService productService) {
+    public OrderServiceImpl(OrderDao orderDAO, ProductService productService, ClientService clientService) {
         this.orderDAO = orderDAO;
         this.productService = productService;
+        this.clientService = clientService;
     }
 
     @Override
     public void create(String clientId, String productId) {
         Order order = new Order(
-                Long.valueOf(clientId),
+                clientService.findById(clientId),
                 Arrays.asList(productService.findById(productId)
                 )
         );
@@ -48,14 +51,14 @@ public class OrderServiceImpl implements OrderService {
         for (Map.Entry<String, String> pair : updateFields.entrySet()) {
             switch (pair.getKey()) {
                 case "clientId":
-                    order.setClientID(Long.valueOf(pair.getValue()));
+                    order.setClient(clientService.findById(pair.getValue()));
                     break;
                 case "idProductAddToOrder":
                     Product foundProduct = productService.findById(pair.getValue());
                     if (foundProduct == null) {
                         System.out.println("Was not found Product with such ID");
                     } else {
-                        order.getProduct().add(foundProduct);
+                        order.getProductList().add(foundProduct);
                     }
                     break;
                 case "idProductDeleteFromOrder":
@@ -63,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
                     if (foundProduct2 == null) {
                         System.out.println("Was not found Product with such ID");
                     } else {
-                        order.getProduct().remove(foundProduct2);
+                        order.getProductList().remove(foundProduct2);
                     }
                     break;
 

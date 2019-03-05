@@ -15,6 +15,15 @@ public class Client {
     private String email;
     private int age;
 
+    public Client(Long id, String name, String surname, String phone, String email, int age) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.phone = phone;
+        this.email = email;
+        this.age = age;
+    }
+
     public Long getId() {
         return id;
     }

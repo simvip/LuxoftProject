@@ -1,4 +1,4 @@
-package ua.com.sliusar.dao.impl;
+package ua.com.sliusar.dao.impl.inMemory;
 
 import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.domain.Order;
@@ -51,7 +51,7 @@ public class OrderDaoInMemoryImpl implements OrderDao {
     @Override
     public List<Order> findAllOrderOfClient(Long clientID) {
         return orderMap.values().stream()
-                .filter(client -> client.getClientID().equals(clientID))
+                .filter(client -> client.getClient().getId().equals(clientID))
                 .collect(Collectors.toList());
     }
 }

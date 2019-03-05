@@ -42,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void createClient(String name, String surname, String phone) {
-        createClient(name,surname,phone,"",0);
+        createClient(name, surname, phone, "", 0);
     }
 
     @Override

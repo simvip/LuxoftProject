@@ -1,5 +1,6 @@
 package ua.com.sliusar.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -11,24 +12,39 @@ import java.util.List;
  */
 public class Order {
     private Long id;
-    private Long clientID;
-    private List<Product> product;
+    private BigDecimal totalPrice;
+    private Client client;
+    private List<Product> productList;
+
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 
     public Long getId() {
         return id;
     }
 
-    public Order(Long clientID, List<Product> product) {
-        this.clientID = clientID;
-        this.product = product;
+    public Order(Client client, List<Product> product) {
+        this.client = client;
+        this.productList = product;
+    }
+
+    public Order(Long id, BigDecimal totalPrice) {
+        this.id = id;
+        this.totalPrice = totalPrice;
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", clientID=" + clientID +
-                ", product=" + product +
+                ", clientID=" + client.getName() +
+                ", productList=" + productList +
                 '}';
     }
 
@@ -36,19 +52,19 @@ public class Order {
         this.id = id;
     }
 
-    public Long getClientID() {
-        return clientID;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientID(Long clientID) {
-        this.clientID = clientID;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
-    public List<Product> getProduct() {
-        return product;
+    public List<Product> getProductList() {
+        return productList;
     }
 
-    public void setProduct(List<Product> product) {
-        this.product = product;
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 }

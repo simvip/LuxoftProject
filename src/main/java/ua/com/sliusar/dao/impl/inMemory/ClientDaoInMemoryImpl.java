@@ -1,4 +1,4 @@
-package ua.com.sliusar.dao.impl;
+package ua.com.sliusar.dao.impl.inMemory;
 
 import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.domain.Client;
@@ -15,7 +15,7 @@ import java.util.Map;
  * 2/14/19
  * @project MyLuxoftProject
  */
-public class ClientDaoInMemoryImpl implements ClientDao {
+public class ClientDaoInMemoryImpl implements ClientDao{
     private final Map<Long, Client> clientMap = new HashMap<>();
     private long count = 0;
     private static volatile ClientDaoInMemoryImpl instance;
@@ -59,5 +59,10 @@ public class ClientDaoInMemoryImpl implements ClientDao {
     @Override
     public List<Client> findAll() {
         return new ArrayList<>(this.clientMap.values());
+    }
+
+    @Override
+    public Client findByPhone(String phoneNumber) {
+        return null;
     }
 }
