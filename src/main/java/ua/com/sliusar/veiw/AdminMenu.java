@@ -46,6 +46,7 @@ public class AdminMenu {
                 System.out.println("Wrong menu");
         }
     }
+
     private void soutMainMenu() {
         System.out.println("Choice menu:");
         System.out.println("------------------");

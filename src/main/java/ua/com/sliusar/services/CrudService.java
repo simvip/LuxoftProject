@@ -13,7 +13,10 @@ import java.util.Map;
 public interface CrudService<T> {
 
     void delete(String id);
+
     void update(String id, Map<String, String> updateFields);
+
     T findById(String id);
+
     List<T> findAll();
 }

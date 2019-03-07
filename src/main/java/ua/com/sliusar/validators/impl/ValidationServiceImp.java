@@ -33,7 +33,7 @@ public class ValidationServiceImp implements ValidationService {
     }
 
     @Override
-    public void validateBigВecimal(String inputValue) throws BusinessException {
+    public void validateBigDecimal(String inputValue) throws BusinessException {
         if (!inputValue.matches("-?+\\d+(\\.0*)?")){
             throw new BusinessException("Incorrect BigDecimal format");
         }

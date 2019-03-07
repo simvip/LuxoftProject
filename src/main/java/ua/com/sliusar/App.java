@@ -3,9 +3,9 @@ package ua.com.sliusar;
 import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.dao.ProductDao;
-import ua.com.sliusar.dao.impl.inMemory.ClientDaoInMemoryImpl;
-import ua.com.sliusar.dao.impl.inMemory.OrderDaoInMemoryImpl;
-import ua.com.sliusar.dao.impl.inMemory.ProductDaoInMemoryImpl;
+import ua.com.sliusar.dao.impl.ClientDaoDBImpl;
+import ua.com.sliusar.dao.impl.OrderDaoDBImpl;
+import ua.com.sliusar.dao.impl.ProductDaoDBImpl;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
@@ -36,16 +36,20 @@ public class App {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
+        String DB_URL = "jdbc:h2:tcp://localhost/~/JavaProjects/MyLuxoftProject/src/main/resources/DB/WorkBase";
+        String USER = "sa";
+        String PASSWORD = "";
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        OrderDao orderDAO = new OrderDaoInMemoryImpl();
-        ClientDao clientDAO = ClientDaoInMemoryImpl.getInstance();
-        ProductDao productDAO = new ProductDaoInMemoryImpl();
+        ClientDao clientDAO = new ClientDaoDBImpl(DB_URL, USER, PASSWORD);
+        ProductDao productDAO = new ProductDaoDBImpl(DB_URL, USER, PASSWORD);
+        OrderDao orderDAO = new OrderDaoDBImpl(DB_URL, USER, PASSWORD, productDAO, clientDAO);
 
         ValidationService validationService = new ValidationServiceImp();
-        ProductService productService = new ProductServiceImpl(productDAO,validationService);
+        ProductService productService = new ProductServiceImpl(productDAO, validationService);
         ClientService clientService = new ClientServiceImpl(clientDAO, validationService);
-        OrderService orderService = new OrderServiceImpl(orderDAO,productService,clientService);
+        OrderService orderService = new OrderServiceImpl(orderDAO, productService, clientService, validationService);
 
         ProductMenu productMenu = new ProductMenu(br, productService);
         OrderMenu orderMenu = new OrderMenu(br, orderService);

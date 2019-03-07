@@ -15,62 +15,63 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 public class ProductDaoDBImpl implements ProductDao {
-    public static final String DB_URL = "jdbc:h2:tcp://localhost/~/JavaProjects/MyLuxoftProject/src/main/resources/DB/WorkBase";
-    public static final String USER = "sa";
-    public static final String PASSWORD = "";
+    private String db_url;
+    private String user;
+    private String password;
 
-    private Connection connection;
-
-    public ProductDaoDBImpl() {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-
-        try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
-            e.printStackTrace();
-        }
-
+    public ProductDaoDBImpl(String db_url, String user, String password) {
+        this.db_url = db_url;
+        this.user = user;
+        this.password = password;
     }
 
     @Override
     public boolean createOrUpdate(Product product) {
-        if (product.getId() == null)
+        if (product.getId() == null) {
             return create(product);
-        else
+        } else {
             return update(product);
+        }
     }
 
     private boolean update(Product product) {
-        String query = "UPDATE PRODUCT SET NAME = ?,PRICE = ?  WHERE PRODUCT.ID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, product.getName());
-            stmt.setBigDecimal(2, product.getPrice());
-            stmt.setLong(3, product.getId());
-            stmt.executeUpdate();
-            connection.commit();
-            return true;
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String query = "UPDATE PRODUCT SET NAME = ?,PRICE = ?  WHERE PRODUCT.ID = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setString(1, product.getName());
+                stmt.setBigDecimal(2, product.getPrice());
+                stmt.setLong(3, product.getId());
+                stmt.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
     }
 
     private boolean create(Product product) {
-        String query = "INSERT INTO PRODUCT(NAME,PRICE) VALUES (?,?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, product.getName());
-            stmt.setBigDecimal(2, product.getPrice());
-            stmt.executeUpdate();
-            connection.commit();
-            return true;
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String query = "INSERT INTO PRODUCT(NAME,PRICE) VALUES (?,?)";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setString(1, product.getName());
+                stmt.setBigDecimal(2, product.getPrice());
+                stmt.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
@@ -78,13 +79,20 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public boolean delete(Long id) {
-        String query = "DELETE FROM PRODUCT WHERE PRODUCT.ID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, id);
-            stmt.executeUpdate();
-            connection.commit();
-            return true;
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String query = "DELETE FROM PRODUCT WHERE PRODUCT.ID = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, id);
+                stmt.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
@@ -92,22 +100,23 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public Product findById(Long id) {
-        String query = "SELECT * FROM PRODUCT WHERE PRODUCT.ID = ?";
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String query = "SELECT * FROM PRODUCT WHERE PRODUCT.ID = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-
-                    return new Product(
-                            rs.getLong("id"),
-                            rs.getString("name"),
-                            rs.getBigDecimal("price")
-
-                    );
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        return constructProductFromResultSet(rs);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return null;
@@ -116,22 +125,33 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public List<Product> findAll() {
-        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT;")) {
-            ArrayList rezult = new ArrayList();
-            while (rs.next()) {
-                rezult.add(
-                        new Product(
-                                rs.getLong("id"),
-                                rs.getString("name"),
-                                rs.getBigDecimal("price")
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT;")) {
+                List result = new ArrayList();
+                while (rs.next()) {
+                    result.add(
+                            constructProductFromResultSet(rs)
+                    );
+                }
 
-                        ));
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            return rezult;
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Product constructProductFromResultSet(ResultSet rs) throws SQLException {
+        return new Product(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getBigDecimal("price")
+        );
     }
 }

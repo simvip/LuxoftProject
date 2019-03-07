@@ -1,6 +1,8 @@
 package ua.com.sliusar.dao.impl;
 
+import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.dao.OrderDao;
+import ua.com.sliusar.dao.ProductDao;
 import ua.com.sliusar.domain.Order;
 import ua.com.sliusar.domain.Product;
 
@@ -16,96 +18,150 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 public class OrderDaoDBImpl implements OrderDao {
+    private String db_url;
+    private String user;
+    private String password;
+    private ProductDao productDaoDB;
+    private ClientDao clientDaoDB;
 
-    public static final String DB_URL = "jdbc:h2:tcp://localhost/~/JavaProjects/MyLuxoftProject/src/main/resources/DB/WorkBase";
-    public static final String USER = "sa";
-    public static final String PASSWORD = "";
-
-    private Connection connection;
-
-    public OrderDaoDBImpl() {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-
-        try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASSWORD);
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
-            e.printStackTrace();
-        }
-
+    public OrderDaoDBImpl(String db_url, String user, String password, ProductDao productDaoDB, ClientDao clientDaoDB) {
+        this.db_url = db_url;
+        this.user = user;
+        this.password = password;
+        this.productDaoDB = productDaoDB;
+        this.clientDaoDB = clientDaoDB;
     }
 
     @Override
     public List<Order> findAllOrderOfClient(Long clientID) {
-        List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM MAINORDER WHERE MAINORDER.CLIENTID = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, clientID);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    orders.add(constructOrderFromStatment(rs));
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            List<Order> orders = new ArrayList<>();
+            String query = "SELECT * FROM MAIN_ORDER WHERE MAIN_ORDER.CLIENT_ID = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, clientID);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        orders.add(constructOrderFromResultSet(rs));
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+            return orders;
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
-        return orders;
+        return null;
     }
 
     @Override
     public boolean createOrUpdate(Order order) {
-        String mainOrder;
-        boolean needToCreate = order.getId() == null;
-        if (needToCreate) {
-            mainOrder = "INSERT INTO MAINORDER (CLIENTID,TOTALPRICE) VALUES (?,?)";
+        if (order.getId() == null) {
+            return createOrder(order);
         } else {
-            mainOrder = "UPDATE MAINORDER SET CLIENTID = ?,TOTALPRICE = ? WHERE MAINORDER.ID = ?";
+            return updateOrder(order);
         }
-        String productOrder = "INSERT INTO ORDER_PRODUCTS (IDORDER,IDPRODUCT) VALUES (?,?)";
-        try (
-                PreparedStatement stmtMain = connection.prepareStatement(mainOrder);
-                PreparedStatement stmtOrder_Product = connection.prepareStatement(productOrder)
-        ) {
-            stmtMain.setLong(1, order.getClient().getId());
-            stmtMain.setBigDecimal(2, order.getTotalPrice());
-            if (!needToCreate) {
-                stmtMain.setLong(3, order.getId());
+    }
+
+    private boolean createOrder(Order order) {
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String mainOrder = "INSERT INTO MAIN_ORDER (CLIENT_ID,TOTAL_PRICE) VALUES (?,?)";
+            try (PreparedStatement stmtMain = connection.prepareStatement(mainOrder)) {
+                stmtMain.setLong(1, order.getClient().getId());
+                stmtMain.setBigDecimal(2, order.getTotalPrice());
+                stmtMain.executeUpdate();
+                // if we create new order, we need to update id in current instance.
+                ResultSet rs = stmtMain.getGeneratedKeys();
+                if (rs.next()) {
+                    order.setId(rs.getLong(1));
+                }
+                createOrUpdateOrderProduct(order);
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-            stmtMain.executeUpdate();
-            for (Product item : order.getProductList()) {
-                stmtOrder_Product.setLong(1, order.getId());
-                stmtOrder_Product.setLong(2, item.getId());
-                stmtOrder_Product.executeUpdate();
-            }
-            connection.commit();
-            return true;
         } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
     }
 
+    private boolean updateOrder(Order order) {
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String mainOrder = "UPDATE MAIN_ORDER SET CLIENT_ID = ?,TOTAL_PRICE = ? WHERE MAIN_ORDER.ID = ?";
+            try (PreparedStatement stmtMain = connection.prepareStatement(mainOrder)) {
+                stmtMain.setLong(1, order.getClient().getId());
+                stmtMain.setBigDecimal(2, order.getTotalPrice());
+                stmtMain.setLong(3, order.getId());
+                stmtMain.executeUpdate();
+                createOrUpdateOrderProduct(order);
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void createOrUpdateOrderProduct(Order order) throws SQLException {
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String productOrder = "INSERT INTO ORDER_PRODUCTS (ID_PRODUCT,ID_ORDER) VALUES (?,?)";
+            String productOrderClean = "DELETE FROM ORDER_PRODUCTS WHERE ORDER_PRODUCTS.ID_ORDER = ?";
+            try (
+                    PreparedStatement stmt = connection.prepareStatement(productOrder);
+                    PreparedStatement stmtClean = connection.prepareStatement(productOrderClean);
+            ) {
+                // clean table by Order id
+                stmtClean.setLong(1, order.getId());
+                stmtClean.executeUpdate();
+                // add new records
+                for (Product item : order.getProductList()) {
+                    stmt.setLong(1, item.getId());
+                    stmt.setLong(2, order.getId());
+                    stmt.executeUpdate();
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public boolean delete(Long id) {
-        String mainOrder = "DELETE FROM MAINORDER WHERE MAINORDER.ID = ?";
-        String productOrder = "DELETE FROM ORDER_PRODUCTS WHERE ORDER_PRODUCTS.IDPRODUCT = ?";
-        try (
-                PreparedStatement mainStmt = connection.prepareStatement(mainOrder);
-                PreparedStatement orderStmt = connection.prepareStatement(productOrder);
-        ) {
-            mainStmt.setLong(1, id);
-            mainStmt.executeUpdate();
-            orderStmt.setLong(1, id);
-            orderStmt.executeUpdate();
-            connection.commit();
-            return true;
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String mainOrder = "DELETE FROM MAIN_ORDER WHERE MAIN_ORDER.ID = ?";
+            try (
+                    PreparedStatement mainStmt = connection.prepareStatement(mainOrder);
+            ) {
+                mainStmt.setLong(1, id);
+                mainStmt.executeUpdate();
+                connection.commit();
+                return true;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
@@ -113,16 +169,23 @@ public class OrderDaoDBImpl implements OrderDao {
 
     @Override
     public Order findById(Long id) {
-        String query = "SELECT * FROM MAINORDER WHERE MAINORDER.ID = ?";
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            String query = "SELECT * FROM MAIN_ORDER WHERE MAIN_ORDER.ID = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    return constructOrderFromStatment(rs);
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, id);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        return constructOrderFromResultSet(rs);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return null;
@@ -130,59 +193,82 @@ public class OrderDaoDBImpl implements OrderDao {
 
     @Override
     public List<Order> findAll() {
-        List<Order> orders = new ArrayList<>();
-        String query = "SELECT * FROM MAINORDER";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    orders.add(constructOrderFromStatment(rs));
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            List<Order> orders = new ArrayList<>();
+            String query = "SELECT * FROM MAIN_ORDER";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        orders.add(constructOrderFromResultSet(rs));
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+            return orders;
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
-        return orders;
+        return null;
     }
 
-    private Order constructOrderFromStatment(ResultSet rs) {
-
+    private Order constructOrderFromResultSet(ResultSet rs) {
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
+            e.printStackTrace();
+        }
         try {
             Order order = new Order(
                     rs.getLong("Id"),
-                    rs.getBigDecimal("totalprice")
+                    rs.getBigDecimal("total_price")
             );
-            order.setClient( new ClientDaoDBImpl()
+            order.setClient(clientDaoDB
                     .findById(
-                            rs.getLong("clientId"))
+                            rs.getLong("client_Id"))
 
             );
             order.setProductList(getProductsByHisOwner(
-                    rs.getLong("idOrder")
+                    rs.getLong("id")
             ));
+            return order;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-       return null;
+        return null;
     }
 
     private List<Product> getProductsByHisOwner(Long idOrder) {
-        List<Product> products = new ArrayList<>();
-        String query = "SELECT * FROM ORDER_PRODUCTS WHERE ORDER_PRODUCTS.IDORDER = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setLong(1, idOrder);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    products.add(
-                            new ProductDaoDBImpl()
-                                    .findById(
-                                            rs.getLong("idProduct")
-                                    )
-                    );
+        try {
+            Connection connection = DriverManager.getConnection(db_url, user, password);
+            connection.setAutoCommit(false);
+            List<Product> products = new ArrayList<>();
+            String query = "SELECT * FROM ORDER_PRODUCTS WHERE ORDER_PRODUCTS.ID_ORDER = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(query)) {
+                stmt.setLong(1, idOrder);
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        products.add(
+                                this.productDaoDB
+                                        .findById(
+                                                rs.getLong("id_Product")
+                                        )
+                        );
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
+            return products;
+        } catch (SQLException e) {
+            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
-        return products;
+        return null;
     }
 }

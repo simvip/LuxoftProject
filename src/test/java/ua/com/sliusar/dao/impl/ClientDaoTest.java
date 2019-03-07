@@ -1,7 +1,9 @@
 package ua.com.sliusar.dao.impl;
 
 import org.junit.After;
-import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import ua.com.sliusar.dao.ClientDao;
 import ua.com.sliusar.domain.Client;
 
@@ -14,16 +16,17 @@ import static org.junit.Assert.assertTrue;
  * 2/15/19
  * @project MyLuxoftProject
  */
+@Ignore
 public class ClientDaoTest {
     private static ClientDao dao;
     public Client client1;
     public Client client2;
 
-    @Before
-    public void setUp() throws Exception {
-        dao = new ClientDaoDBImpl();
-        client1 = new Client("Dude", "Franklin", "+380974445555");
-        client2 = new Client("Stas", "Kosmos", "+380504445555");
+    @BeforeClass
+    @Ignore
+    public static void setUp() throws Exception {
+//        dao = new ClientDaoDBImpl();
+
     }
 
     @After
@@ -31,26 +34,30 @@ public class ClientDaoTest {
         // clean DB
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void testAddClient() {
         assertTrue(dao.createOrUpdate(client2));
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void testUpdateClient() {
         dao.createOrUpdate(client1);
         Client findClient = dao.findByPhone("+380974445555");
         assertTrue(findClient.getPhone().equals(client1.getPhone()));
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void testGetAllClients() {
         dao.createOrUpdate(client1);
         dao.createOrUpdate(client2);
         assertTrue(dao.findAll().size()==2);
     }
 
-    //@Test
+    @Test
+    @Ignore
     public void testDeleteClient() {
         dao.createOrUpdate(client1);
         Client findClient = dao.findByPhone("+380974445555");

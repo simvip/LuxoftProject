@@ -67,13 +67,13 @@ public class ValidationServiceImpTest {
 
     @Test(expected = BusinessException.class)
     public void testValidateWrongBigDecimal() throws BusinessException {
-        validationService.validateBigВecimal("-545464f");
+        validationService.validateBigDecimal("-545464f");
     }
 
     @Test()
     public void testValidateCorrectBigDecimal() {
         try {
-            validationService.validateBigВecimal(BigDecimal.ONE.toString());
+            validationService.validateBigDecimal(BigDecimal.ONE.toString());
         } catch (Exception e) {
             Assert.fail("Unexpected exception");
         }

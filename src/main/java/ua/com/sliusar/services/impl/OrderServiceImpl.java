@@ -3,10 +3,13 @@ package ua.com.sliusar.services.impl;
 import ua.com.sliusar.dao.OrderDao;
 import ua.com.sliusar.domain.Order;
 import ua.com.sliusar.domain.Product;
+import ua.com.sliusar.exceptions.BusinessException;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.services.OrderService;
 import ua.com.sliusar.services.ProductService;
+import ua.com.sliusar.validators.ValidationService;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,20 +25,28 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDAO;
     private ProductService productService;
     private ClientService clientService;
+    private ValidationService validationService;
 
-    public OrderServiceImpl(OrderDao orderDAO, ProductService productService, ClientService clientService) {
+    public OrderServiceImpl(OrderDao orderDAO, ProductService productService, ClientService clientService, ValidationService validationService) {
         this.orderDAO = orderDAO;
         this.productService = productService;
         this.clientService = clientService;
+        this.validationService = validationService;
     }
 
     @Override
-    public void create(String clientId, String productId) {
+    public void create(String clientId, String price, String productId) {
         Order order = new Order(
                 clientService.findById(clientId),
                 Arrays.asList(productService.findById(productId)
                 )
         );
+        try {
+            validationService.validateBigDecimal(price);
+            order.setTotalPrice(new BigDecimal(price));
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
         if (orderDAO.createOrUpdate(order)) {
             System.out.println("Order was success created");
         }
@@ -69,9 +80,9 @@ public class OrderServiceImpl implements OrderService {
                         order.getProductList().remove(foundProduct2);
                     }
                     break;
-
             }
         }
+        orderDAO.createOrUpdate(order);
     }
 
     @Override

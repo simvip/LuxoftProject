@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void create(String name, String price) {
         try {
-            validationService.validateBigВecimal(price);
+            validationService.validateBigDecimal(price);
             Product product = new Product(name, new BigDecimal(price));
             if (productDAO.createOrUpdate(product)){
                 System.out.println("Product was success created");
@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
                 case "price":
                     String price = pair.getValue();
                     try {
-                        validationService.validateBigВecimal(price);
+                        validationService.validateBigDecimal(price);
                         product.setPrice(new BigDecimal(price));
                     } catch (BusinessException e) {
                         e.printStackTrace();

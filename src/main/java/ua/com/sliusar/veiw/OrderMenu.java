@@ -29,7 +29,10 @@ public class OrderMenu {
         String name = br.readLine();
         System.out.println("Input price");
         String price = br.readLine();
-        orderService.create(name, price);
+        System.out.println("Input Product id");
+        String productId = br.readLine();
+
+        orderService.create(name, price, productId);
     }
 
     private void modifyOrder() throws IOException {
@@ -37,15 +40,7 @@ public class OrderMenu {
         String id = br.readLine();
         updateMenu();
         switch (br.readLine()) {
-            case "1": //change client ID
-                System.out.println("Input new client ID");
-                orderService.update(id, new HashMap<String, String>() {
-                    {
-                        put("clientId", br.readLine());
-                    }
-                });
-                break;
-            case "2":// Add Product
+            case "1":// Add Product
                 System.out.println("Input ID product");
                 orderService.update(id, new HashMap<String, String>() {
                     {
@@ -53,7 +48,7 @@ public class OrderMenu {
                     }
                 });
                 break;
-            case "3":// Delete Product
+            case "2":// Delete Product
                 System.out.println("Input ID Product");
                 orderService.update(id, new HashMap<String, String>() {
                     {
@@ -75,9 +70,8 @@ public class OrderMenu {
     private void updateMenu() {
         System.out.println("------------------");
         System.out.println("What do you want to update?");
-        System.out.println("1. Client ID");
-        System.out.println("2. Add product");
-        System.out.println("3. Delete product");
+        System.out.println("1. Add product");
+        System.out.println("2. Delete product");
         System.out.println("0. Return");
         System.out.println("------------------");
     }
@@ -109,9 +103,9 @@ public class OrderMenu {
     }
 
     public void viewOnlyMenu() {
-        System.out.println("1. Modify order");
-        System.out.println("2. Remove order");
-        System.out.println("3. List all orders");
+        System.out.println("2. Modify order");
+        System.out.println("3. Remove order");
+        System.out.println("4. List all orders");
         System.out.println("9. Return main menu");
         System.out.println("0. Exit");
     }

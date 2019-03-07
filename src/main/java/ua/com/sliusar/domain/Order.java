@@ -2,6 +2,7 @@ package ua.com.sliusar.domain;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class Order
@@ -16,6 +17,21 @@ public class Order {
     private Client client;
     private List<Product> productList;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) &&
+                Objects.equals(totalPrice, order.totalPrice) &&
+                Objects.equals(client, order.client) &&
+                Objects.equals(productList, order.productList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, totalPrice, client, productList);
+    }
 
     public BigDecimal getTotalPrice() {
         return totalPrice;
@@ -34,18 +50,19 @@ public class Order {
         this.productList = product;
     }
 
-    public Order(Long id, BigDecimal totalPrice) {
-        this.id = id;
-        this.totalPrice = totalPrice;
-    }
-
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", clientID=" + client.getName() +
+                ", totalPrice=" + totalPrice +
+                ", client=" + client +
                 ", productList=" + productList +
                 '}';
+    }
+
+    public Order(Long id, BigDecimal totalPrice) {
+        this.id = id;
+        this.totalPrice = totalPrice;
     }
 
     public void setId(Long id) {

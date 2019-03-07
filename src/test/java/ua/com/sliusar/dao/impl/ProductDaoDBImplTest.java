@@ -2,6 +2,7 @@ package ua.com.sliusar.dao.impl;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,8 +16,8 @@ import static org.junit.Assert.*;
  */
 public class ProductDaoDBImplTest {
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeClass
+    public static void init() throws Exception {
     }
 
     @After

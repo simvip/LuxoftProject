@@ -1,5 +1,7 @@
 package ua.com.sliusar.domain;
 
+import java.util.Objects;
+
 /**
  * Class Client
  *
@@ -94,12 +96,32 @@ public class Client {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Client client = (Client) o;
+        return age == client.age &&
+                Objects.equals(id, client.id) &&
+                Objects.equals(name, client.name) &&
+                Objects.equals(surname, client.surname) &&
+                Objects.equals(phone, client.phone) &&
+                Objects.equals(email, client.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, surname, phone, email, age);
+    }
+
+    @Override
     public String toString() {
         return "Client{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
                 '}';
     }
 }

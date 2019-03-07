@@ -10,5 +10,5 @@ import ua.com.sliusar.domain.Order;
  * @project MyLuxoftProject
  */
 public interface OrderService extends CrudService<Order> {
-    void create(String clientID, String productId);
+    void create(String clientID, String price, String productId);
 }

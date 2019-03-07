@@ -11,7 +11,10 @@ import ua.com.sliusar.exceptions.BusinessException;
  */
 public interface ValidationService {
     void validateAge(int age) throws BusinessException;
+
     void validatePhone(String inputValue) throws BusinessException;
+
     void validateEmail(String inputValue) throws BusinessException;
-    void validateBigВecimal(String inputValue) throws BusinessException;
+
+    void validateBigDecimal(String inputValue) throws BusinessException;
 }
