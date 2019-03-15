@@ -10,7 +10,7 @@ import ua.com.sliusar.services.ProductService;
 import ua.com.sliusar.validators.ValidationService;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,10 +36,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void create(String clientId, String price, String productId) {
+        Product addProduct = productService.findById(productId);
+        List<Product> productList = new ArrayList<>();
+        productList.add(addProduct);
         Order order = new Order(
+                addProduct.getPrice(),
                 clientService.findById(clientId),
-                Arrays.asList(productService.findById(productId)
-                )
+                productList
         );
         try {
             validationService.validateBigDecimal(price);
@@ -66,10 +69,15 @@ public class OrderServiceImpl implements OrderService {
                     break;
                 case "idProductAddToOrder":
                     Product foundProduct = productService.findById(pair.getValue());
+                    order.setTotalPrice(
+                            order.getTotalPrice().add(foundProduct.getPrice())
+                    );
                     if (foundProduct == null) {
                         System.out.println("Was not found Product with such ID");
                     } else {
-                        order.getProductList().add(foundProduct);
+                        List<Product> productList = order.getProductList();
+                        productList.add(foundProduct);
+                        order.setProductList(productList);
                     }
                     break;
                 case "idProductDeleteFromOrder":

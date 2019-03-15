@@ -45,6 +45,16 @@ public class Order {
         return id;
     }
 
+    public Order(Long id, BigDecimal totalPrice, Client client, List<Product> productList) {
+        this(totalPrice, client, productList);
+        this.id = id;
+    }
+
+    public Order(BigDecimal totalPrice, Client client, List<Product> productList) {
+        this(client,productList);
+        this.totalPrice = totalPrice;
+    }
+
     public Order(Client client, List<Product> product) {
         this.client = client;
         this.productList = product;

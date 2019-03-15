@@ -17,13 +17,28 @@ public class Client {
     private String email;
     private int age;
 
-    public Client(Long id, String name, String surname, String phone, String email, int age) {
-        this.id = id;
+    /**
+     * Special case of constructor.
+     *
+     * @param name    String
+     * @param surname String
+     * @param phone   String
+     */
+    public Client(String name, String surname, String phone) {
         this.name = name;
         this.surname = surname;
         this.phone = phone;
+    }
+
+    public Client(String name, String surname, String phone, String email, int age) {
+        this(name, surname, phone);
         this.email = email;
         this.age = age;
+    }
+
+    public Client(Long id, String name, String surname, String phone, String email, int age) {
+        this(name, surname, phone, email, age);
+        this.id = id;
     }
 
     public Long getId() {
@@ -72,27 +87,6 @@ public class Client {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public Client(String name, String surname, String phone, String email, int age) {
-        this.name = name;
-        this.surname = surname;
-        this.phone = phone;
-        this.email = email;
-        this.age = age;
-    }
-
-    /**
-     * Special case of constructor.
-     *
-     * @param name    String
-     * @param surname String
-     * @param phone   String
-     */
-    public Client(String name, String surname, String phone) {
-        this.name = name;
-        this.surname = surname;
-        this.phone = phone;
     }
 
     @Override

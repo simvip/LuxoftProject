@@ -15,7 +15,6 @@ import java.util.Map;
  *
  * @author create by ivanslusar
  * 2/15/19
- * @project MyLuxoftProject
  */
 public class ProductServiceImpl implements ProductService {
     private ProductDao productDAO;
