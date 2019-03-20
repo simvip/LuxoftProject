@@ -36,6 +36,12 @@ public class ClientDaoDBImpl implements ClientDao {
 
     private boolean update(Client client) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String query = "UPDATE CLIENT SET NAME = ?,SURNAME = ?, PHONE = ?, EMAIL = ?, AGE = ?  WHERE CLIENT.ID = ?";
@@ -60,6 +66,12 @@ public class ClientDaoDBImpl implements ClientDao {
     }
 
     private boolean create(Client client) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -86,6 +98,12 @@ public class ClientDaoDBImpl implements ClientDao {
     @Override
     public boolean delete(Long id) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String query = "DELETE FROM CLIENT WHERE CLIENT.ID = ?";
@@ -106,6 +124,12 @@ public class ClientDaoDBImpl implements ClientDao {
 
     @Override
     public Client findById(Long id) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -139,6 +163,12 @@ public class ClientDaoDBImpl implements ClientDao {
     @Override
     public Client findByPhone(String phoneNumber) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String query = "SELECT * FROM CLIENT WHERE CLIENT.PHONE = ?";
@@ -170,6 +200,12 @@ public class ClientDaoDBImpl implements ClientDao {
 
     @Override
     public List<Client> findAll() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);

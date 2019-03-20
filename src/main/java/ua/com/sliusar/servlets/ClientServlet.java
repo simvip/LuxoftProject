@@ -26,18 +26,19 @@ public class ClientServlet extends HttpServlet {
         this.service = service;
     }
 
-    public ClientServlet() {
-    }
-
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger.info("DO GET");
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        resp.getWriter()
-                .write(
-                        new Gson().toJson(service.findAll()));
-
+        String result = "";
+        String idClients = req.getParameter("id");
+        if (idClients == null) {
+            result = new Gson().toJson(service.findAll());
+        } else {
+            result = new Gson().toJson(service.findById(idClients));
+        }
+        resp.getWriter().write(result);
     }
 
     @Override
@@ -47,6 +48,12 @@ public class ClientServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idClients = req.getParameter("id");
+        if (idClients != null) {
+
+        } else {
+            logger.info("Wrong id");
+        }
         // update
         // postman
         super.doPut(req, resp);
@@ -57,7 +64,6 @@ public class ClientServlet extends HttpServlet {
         String idClients = req.getParameter("id");
         service.delete(idClients);
         this.doGet(req, resp);
-//        req.getRequestDispatcher("index.html").forward(req, resp);
     }
 
     private String parseRequestToJson(HttpServletRequest req) {
