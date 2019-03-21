@@ -3,7 +3,7 @@ package ua.com.sliusar.servlets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.log4j.Logger;
-import ua.com.sliusar.services.ClientService;
+import ua.com.sliusar.services.OrderService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,50 +14,50 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
- * Class ClientServlet
+ * Class OrderServlet
  *
  * @author create by ivanslusar
- * 3/15/19
+ * 3/20/19
  * @project MyLuxoftProject
  */
-public class ClientServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(ClientService.class);
-    private ClientService service;
+public class OrderServlet extends HttpServlet {
+    private static final Logger logger = Logger.getLogger(OrderService.class);
+    OrderService service;
 
-    public ClientServlet(ClientService service) {
+    public OrderServlet(OrderService service) {
         this.service = service;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        logger.info("doGet Clients");
+        logger.info("doGet Orders");
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         String result = "";
-        String idClients = req.getParameter("id");
-        if (idClients == null) {
+        String idOrder = req.getParameter("id");
+        if (idOrder == null) {
             result = new Gson().toJson(service.findAll());
         } else {
-            result = new Gson().toJson(service.findById(idClients));
+            result = new Gson().toJson(service.findById(idOrder));
         }
         resp.getWriter().write(result);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        logger.info("doPost Clients");
+        logger.info("doPost Order");
         String parameter = parseRequestToJson(req);
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
-        if (mapParameters.containsKey("name")
-                & mapParameters.containsKey("surname")
-                & mapParameters.containsKey("phone")
+        if (mapParameters.containsKey("clientId")
+                & mapParameters.containsKey("price")
+                & mapParameters.containsKey("productId")
         ) {
-            service.createClient(
-                    mapParameters.get("name"),
-                    mapParameters.get("surname"),
-                    mapParameters.get("phone")
+            service.create(
+                    mapParameters.get("clientId"),
+                    mapParameters.get("price"),
+                    mapParameters.get("productId")
             );
         } else {
             logger.info("Wrong id");
@@ -67,7 +67,7 @@ public class ClientServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        logger.info("doPut Clients");
+        logger.info("doPut Order");
         String parameter = parseRequestToJson(req);
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
@@ -81,11 +81,10 @@ public class ClientServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        logger.info("doDelete Clients");
-        String idClients = req.getParameter("id");
-        service.delete(idClients);
-        this.doGet(req, resp);
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
+        logger.info("doDelete Order");
+        String idOrder = req.getParameter("id");
+        service.delete(idOrder);
     }
 
     private String parseRequestToJson(HttpServletRequest req) {

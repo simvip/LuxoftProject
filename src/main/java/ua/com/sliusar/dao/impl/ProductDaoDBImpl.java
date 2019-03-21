@@ -36,6 +36,12 @@ public class ProductDaoDBImpl implements ProductDao {
 
     private boolean update(Product product) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String query = "UPDATE PRODUCT SET NAME = ?,PRICE = ?  WHERE PRODUCT.ID = ?";
@@ -57,6 +63,12 @@ public class ProductDaoDBImpl implements ProductDao {
     }
 
     private boolean create(Product product) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -80,6 +92,12 @@ public class ProductDaoDBImpl implements ProductDao {
     @Override
     public boolean delete(Long id) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String query = "DELETE FROM PRODUCT WHERE PRODUCT.ID = ?";
@@ -100,6 +118,12 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public Product findById(Long id) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -125,6 +149,12 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public List<Product> findAll() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);

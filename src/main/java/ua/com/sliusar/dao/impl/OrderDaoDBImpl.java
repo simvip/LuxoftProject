@@ -35,6 +35,12 @@ public class OrderDaoDBImpl implements OrderDao {
     @Override
     public List<Order> findAllOrderOfClient(Long clientID) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             List<Order> orders = new ArrayList<>();
@@ -68,10 +74,16 @@ public class OrderDaoDBImpl implements OrderDao {
 
     private boolean createOrder(Order order) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String mainOrder = "INSERT INTO MAIN_ORDER (CLIENT_ID,TOTAL_PRICE) VALUES (?,?)";
-            try (PreparedStatement stmtMain = connection.prepareStatement(mainOrder)) {
+            try (PreparedStatement stmtMain = connection.prepareStatement(mainOrder, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 stmtMain.setLong(1, order.getClient().getId());
                 stmtMain.setBigDecimal(2, order.getTotalPrice());
                 stmtMain.executeUpdate();
@@ -80,8 +92,8 @@ public class OrderDaoDBImpl implements OrderDao {
                 if (rs.next()) {
                     order.setId(rs.getLong(1));
                 }
-                createOrUpdateOrderProduct(order);
                 connection.commit();
+                createOrUpdateOrderProduct(order);
                 return true;
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -94,6 +106,12 @@ public class OrderDaoDBImpl implements OrderDao {
     }
 
     private boolean updateOrder(Order order) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -117,6 +135,12 @@ public class OrderDaoDBImpl implements OrderDao {
     }
 
     private void createOrUpdateOrderProduct(Order order) throws SQLException {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -147,6 +171,12 @@ public class OrderDaoDBImpl implements OrderDao {
     @Override
     public boolean delete(Long id) {
         try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
+        try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
             String mainOrder = "DELETE FROM MAIN_ORDER WHERE MAIN_ORDER.ID = ?";
@@ -169,6 +199,12 @@ public class OrderDaoDBImpl implements OrderDao {
 
     @Override
     public Order findById(Long id) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -193,6 +229,12 @@ public class OrderDaoDBImpl implements OrderDao {
 
     @Override
     public List<Order> findAll() {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
@@ -244,6 +286,12 @@ public class OrderDaoDBImpl implements OrderDao {
     }
 
     private List<Product> getProductsByHisOwner(Long idOrder) {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Can't get class. No driver found");
+            e.printStackTrace();
+        }
         try {
             Connection connection = DriverManager.getConnection(db_url, user, password);
             connection.setAutoCommit(false);
