@@ -75,6 +75,10 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public Order() {
+        // this form used by Hibernate
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

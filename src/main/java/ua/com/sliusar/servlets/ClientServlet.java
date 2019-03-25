@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.log4j.Logger;
 import ua.com.sliusar.services.ClientService;
+import ua.com.sliusar.util.ParserHttpRequest;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -23,6 +23,11 @@ import java.util.Map;
 public class ClientServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(ClientService.class);
     private ClientService service;
+    private final String CLIENT_ID = "id";
+    private final String NAME = "name";
+    private final String SURNAME = "surname";
+    private final String PHONE = "phone";
+
 
     public ClientServlet(ClientService service) {
         this.service = service;
@@ -30,15 +35,16 @@ public class ClientServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        logger.info("doGet Clients");
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
-        String result = "";
-        String idClients = req.getParameter("id");
-        if (idClients == null) {
+        String result;
+        String idClient = req.getParameter("id");
+        if (idClient == null) {
+            logger.info("doGet  Obtaining a list of all clients");
             result = new Gson().toJson(service.findAll());
         } else {
-            result = new Gson().toJson(service.findById(idClients));
+            logger.info("doGet  obtaining client by id:" + idClient);
+            result = new Gson().toJson(service.findById(idClient));
         }
         resp.getWriter().write(result);
     }
@@ -46,18 +52,18 @@ public class ClientServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger.info("doPost Clients");
-        String parameter = parseRequestToJson(req);
+        String parameter = ParserHttpRequest.toJson(req);
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
-        if (mapParameters.containsKey("name")
-                & mapParameters.containsKey("surname")
-                & mapParameters.containsKey("phone")
+        if (mapParameters.containsKey(NAME)
+                && mapParameters.containsKey(SURNAME)
+                && mapParameters.containsKey(PHONE)
         ) {
             service.createClient(
-                    mapParameters.get("name"),
-                    mapParameters.get("surname"),
-                    mapParameters.get("phone")
+                    mapParameters.get(NAME),
+                    mapParameters.get(SURNAME),
+                    mapParameters.get(PHONE)
             );
         } else {
             logger.info("Wrong id");
@@ -68,12 +74,12 @@ public class ClientServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger.info("doPut Clients");
-        String parameter = parseRequestToJson(req);
+        String parameter = ParserHttpRequest.toJson(req);
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
-        if (mapParameters.containsKey("id")) {
-            service.update(mapParameters.get("id"), mapParameters);
+        if (mapParameters.containsKey(CLIENT_ID)) {
+            service.update(mapParameters.get(CLIENT_ID), mapParameters);
         } else {
             logger.info("Wrong id");
         }
@@ -83,21 +89,10 @@ public class ClientServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger.info("doDelete Clients");
-        String idClients = req.getParameter("id");
+        String idClients = req.getParameter(CLIENT_ID);
         service.delete(idClients);
         this.doGet(req, resp);
     }
 
-    private String parseRequestToJson(HttpServletRequest req) {
-        StringBuilder jb = new StringBuilder();
-        String line = "";
-        try {
-            BufferedReader reader = req.getReader();
-            while ((line = reader.readLine()) != null)
-                jb.append(line);
-        } catch (Exception ex) {
-            logger.error("We have a problem with parse request to JSON", ex);
-        }
-        return jb.toString();
-    }
+
 }

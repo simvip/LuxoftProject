@@ -41,6 +41,10 @@ public class Client {
         this.id = id;
     }
 
+    public Client() {
+        // this form used by Hibernate
+    }
+
     public Long getId() {
         return id;
     }

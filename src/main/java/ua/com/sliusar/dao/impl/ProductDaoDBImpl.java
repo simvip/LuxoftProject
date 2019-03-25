@@ -2,6 +2,7 @@ package ua.com.sliusar.dao.impl;
 
 import ua.com.sliusar.dao.ProductDao;
 import ua.com.sliusar.domain.Product;
+import ua.com.sliusar.util.UtilJdbc;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,6 +16,9 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 public class ProductDaoDBImpl implements ProductDao {
+    private static final String ID_PRODUCT = "id";
+    private static final String NAME_PRODUCT = "name";
+    private static final String PRICE_PRODUCT = "price";
     private String db_url;
     private String user;
     private String password;
@@ -35,55 +39,31 @@ public class ProductDaoDBImpl implements ProductDao {
     }
 
     private boolean update(Product product) {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-        try {
-            Connection connection = DriverManager.getConnection(db_url, user, password);
-            connection.setAutoCommit(false);
-            String query = "UPDATE PRODUCT SET NAME = ?,PRICE = ?  WHERE PRODUCT.ID = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setString(1, product.getName());
-                stmt.setBigDecimal(2, product.getPrice());
-                stmt.setLong(3, product.getId());
-                stmt.executeUpdate();
-                connection.commit();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        Connection connection = UtilJdbc.getConnection(db_url, user, password);
+        String query = "UPDATE PRODUCT SET NAME = ?,PRICE = ?  WHERE PRODUCT.ID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, product.getName());
+            stmt.setBigDecimal(2, product.getPrice());
+            stmt.setLong(3, product.getId());
+            stmt.executeUpdate();
+            connection.commit();
+            return true;
         } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
     }
 
     private boolean create(Product product) {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-        try {
-            Connection connection = DriverManager.getConnection(db_url, user, password);
-            connection.setAutoCommit(false);
-            String query = "INSERT INTO PRODUCT(NAME,PRICE) VALUES (?,?)";
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setString(1, product.getName());
-                stmt.setBigDecimal(2, product.getPrice());
-                stmt.executeUpdate();
-                connection.commit();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        Connection connection = UtilJdbc.getConnection(db_url, user, password);
+        String query = "INSERT INTO PRODUCT(NAME,PRICE) VALUES (?,?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, product.getName());
+            stmt.setBigDecimal(2, product.getPrice());
+            stmt.executeUpdate();
+            connection.commit();
+            return true;
         } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
@@ -91,26 +71,14 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public boolean delete(Long id) {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-        try {
-            Connection connection = DriverManager.getConnection(db_url, user, password);
-            connection.setAutoCommit(false);
-            String query = "DELETE FROM PRODUCT WHERE PRODUCT.ID = ?";
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setLong(1, id);
-                stmt.executeUpdate();
-                connection.commit();
-                return true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        Connection connection = UtilJdbc.getConnection(db_url, user, password);
+        String query = "DELETE FROM PRODUCT WHERE PRODUCT.ID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+            connection.commit();
+            return true;
         } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
         }
         return false;
@@ -118,29 +86,16 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public Product findById(Long id) {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-        try {
-            Connection connection = DriverManager.getConnection(db_url, user, password);
-            connection.setAutoCommit(false);
-            String query = "SELECT * FROM PRODUCT WHERE PRODUCT.ID = ?";
-
-            try (PreparedStatement stmt = connection.prepareStatement(query)) {
-                stmt.setLong(1, id);
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        return constructProductFromResultSet(rs);
-                    }
+        Connection connection = UtilJdbc.getConnection(db_url, user, password);
+        String query = "SELECT * FROM PRODUCT WHERE PRODUCT.ID = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    return constructProductFromResultSet(rs);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -149,29 +104,17 @@ public class ProductDaoDBImpl implements ProductDao {
 
     @Override
     public List<Product> findAll() {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Can't get class. No driver found");
-            e.printStackTrace();
-        }
-        try {
-            Connection connection = DriverManager.getConnection(db_url, user, password);
-            connection.setAutoCommit(false);
-            try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT;")) {
-                List result = new ArrayList();
-                while (rs.next()) {
-                    result.add(
-                            constructProductFromResultSet(rs)
-                    );
-                }
-
-                return result;
-            } catch (Exception e) {
-                e.printStackTrace();
+        Connection connection = UtilJdbc.getConnection(db_url, user, password);
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery("SELECT * FROM PRODUCT;")) {
+            List result = new ArrayList();
+            while (rs.next()) {
+                result.add(
+                        constructProductFromResultSet(rs)
+                );
             }
-        } catch (SQLException e) {
-            System.out.println("Can't get connection. Incorrect URL");
+
+            return result;
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -179,9 +122,9 @@ public class ProductDaoDBImpl implements ProductDao {
 
     private Product constructProductFromResultSet(ResultSet rs) throws SQLException {
         return new Product(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getBigDecimal("price")
+                rs.getLong(ID_PRODUCT),
+                rs.getString(NAME_PRODUCT),
+                rs.getBigDecimal(PRICE_PRODUCT)
         );
     }
 }

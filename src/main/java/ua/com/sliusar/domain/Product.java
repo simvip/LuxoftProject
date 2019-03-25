@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Product {
     private Long id;
     private String name;
-
+    private BigDecimal price;
 
     @Override
     public boolean equals(Object o) {
@@ -30,7 +30,9 @@ public class Product {
         return Objects.hash(id, name, price);
     }
 
-    private BigDecimal price;
+    public Product() {
+        // this form used by Hibernate
+    }
 
     public Product(String name, BigDecimal price) {
         this.name = name;
