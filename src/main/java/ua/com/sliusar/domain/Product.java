@@ -1,5 +1,6 @@
 package ua.com.sliusar.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -10,9 +11,16 @@ import java.util.Objects;
  * 2/14/19
  * @project MyLuxoftProject
  */
+@Entity
+@Table(name = "Product")
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "price")
     private BigDecimal price;
 
     @Override

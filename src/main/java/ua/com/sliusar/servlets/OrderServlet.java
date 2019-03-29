@@ -55,11 +55,11 @@ public class OrderServlet extends HttpServlet {
                 && mapParameters.containsKey("price")
                 && mapParameters.containsKey("productId")
         ) {
-            service.create(
-                    mapParameters.get("clientId"),
-                    mapParameters.get("price"),
-                    mapParameters.get("productId")
-            );
+//            service.create(
+//                    mapParameters.get("clientId"),
+//                    mapParameters.get("price"),
+//                    mapParameters.get("productId")
+//            );
         } else {
             logger.info("Wrong id");
         }
@@ -74,7 +74,7 @@ public class OrderServlet extends HttpServlet {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
         if (mapParameters.containsKey("id")) {
-            service.update(mapParameters.get("id"), mapParameters);
+//            service.update(mapParameters.get("id"), mapParameters);
         } else {
             logger.info("Wrong id");
         }

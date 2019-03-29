@@ -1,7 +1,6 @@
 package ua.com.sliusar.services;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class OrderService
@@ -14,7 +13,9 @@ public interface CrudService<T> {
 
     void delete(String id);
 
-    void update(String id, Map<String, String> updateFields);
+    void update(T t);
+
+    void create(T t);
 
     T findById(String id);
 

@@ -1,14 +1,15 @@
 package ua.com.sliusar.services.impl;
 
-import ua.com.sliusar.dao.ProductDao;
+import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.exceptions.BusinessException;
+import ua.com.sliusar.persistent.ProductStore;
+import ua.com.sliusar.persistent.Store;
 import ua.com.sliusar.services.ProductService;
 import ua.com.sliusar.validators.ValidationService;
+import ua.com.sliusar.validators.impl.ValidationServiceImp;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class ProductServiceImpl
@@ -16,61 +17,35 @@ import java.util.Map;
  * @author create by ivanslusar
  * 2/15/19
  */
+@Service
 public class ProductServiceImpl implements ProductService {
-    private ProductDao productDAO;
-    private ValidationService validationService;
+    private static final Store<Product> store = ProductStore.getInstance();
+    private ValidationService validationService = new ValidationServiceImp();
 
-    public ProductServiceImpl(ProductDao productDAO, ValidationService validationService) {
-        this.productDAO = productDAO;
-        this.validationService = validationService;
+    public ProductServiceImpl() {
+
     }
 
     @Override
-    public void create(String name, String price) {
+    public void create(Product product) {
         try {
-            validationService.validateBigDecimal(price);
-            Product product = new Product(name, new BigDecimal(price));
-            if (productDAO.createOrUpdate(product)){
-                System.out.println("Product was success created");
-            }
+            validationService.validateBigDecimal(product.getPrice().toString());
+            store.add(product);
         } catch (BusinessException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void update(String id, Map<String, String> updateFields) {
-        Product product = productDAO.findById(Long.valueOf(id));
-        if (product == null) {
-            System.out.println("Product with such id " + id + " doesn`t find");
-            return;
-        }
-        for (Map.Entry<String, String> pair : updateFields.entrySet()) {
-            switch (pair.getKey()) {
-                case "name":
-                    product.setName(pair.getValue());
-                    break;
-                case "price":
-                    String price = pair.getValue();
-                    try {
-                        validationService.validateBigDecimal(price);
-                        product.setPrice(new BigDecimal(price));
-                    } catch (BusinessException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
-        }
-        if (productDAO.createOrUpdate(product)){
-            System.out.println("Product was successes updated");
-        } else {
-            System.out.println("Product was crushed");
-        }
+    public void update(Product product) {
+        store.update(product);
     }
 
     @Override
     public void delete(String id) {
-        if (productDAO.delete(Long.valueOf(id))){
+        Product entity = new Product();
+        entity.setId(Long.valueOf(id));
+        if (store.delete(entity)) {
             System.out.println("Product was successes deleted");
         } else {
             System.out.println("Product wasn`t deleted");
@@ -79,12 +54,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findById(String id) {
-        return productDAO.findById(Long.valueOf(id));
+        return store.findById(Long.valueOf(id));
     }
 
     @Override
     public List<Product> findAll() {
-        return productDAO.findAll();
+        return store.findAll();
     }
 
 }

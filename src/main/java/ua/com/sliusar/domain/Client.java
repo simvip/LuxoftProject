@@ -1,5 +1,6 @@
 package ua.com.sliusar.domain;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
@@ -9,12 +10,22 @@ import java.util.Objects;
  * 2/14/19
  * @project MyLuxoftProject
  */
+@Entity
+@Table(name = "Client")
 public class Client {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
+    @Column(name = "phone")
     private String phone;
+    @Column(name = "email")
     private String email;
+    @Column(name = "age")
     private int age;
 
     /**

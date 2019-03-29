@@ -60,11 +60,11 @@ public class ClientServlet extends HttpServlet {
                 && mapParameters.containsKey(SURNAME)
                 && mapParameters.containsKey(PHONE)
         ) {
-            service.createClient(
-                    mapParameters.get(NAME),
-                    mapParameters.get(SURNAME),
-                    mapParameters.get(PHONE)
-            );
+//            service.createClient(
+//                    mapParameters.get(NAME),
+//                    mapParameters.get(SURNAME),
+//                    mapParameters.get(PHONE)
+//            );
         } else {
             logger.info("Wrong id");
         }
@@ -79,7 +79,7 @@ public class ClientServlet extends HttpServlet {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
         if (mapParameters.containsKey(CLIENT_ID)) {
-            service.update(mapParameters.get(CLIENT_ID), mapParameters);
+//            service.update(mapParameters.get(CLIENT_ID), mapParameters);
         } else {
             logger.info("Wrong id");
         }

@@ -10,5 +10,5 @@ import ua.com.sliusar.domain.Product;
  * @project MyLuxoftProject
  */
 public interface ProductService extends CrudService<Product>{
-    void create(String name, String price);
+
 }

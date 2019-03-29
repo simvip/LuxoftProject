@@ -1,5 +1,6 @@
 package ua.com.sliusar.domain;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -11,11 +12,32 @@ import java.util.Objects;
  * 2/14/19
  * @project MyLuxoftProject
  */
+@Entity
+@Table(name = "Main_Order")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "Total_price")
     private BigDecimal totalPrice;
+
+    @ManyToOne()
+    @JoinColumn(name = "client_id",referencedColumnName = "id")
     private Client client;
+
+    @JoinTable(
+            name = "ORDER_PRODUCTS",
+            joinColumns = @JoinColumn(name = "ID_ORDER", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "id"))
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Product> productList;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, totalPrice, client, productList);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -26,11 +48,6 @@ public class Order {
                 Objects.equals(totalPrice, order.totalPrice) &&
                 Objects.equals(client, order.client) &&
                 Objects.equals(productList, order.productList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, totalPrice, client, productList);
     }
 
     public BigDecimal getTotalPrice() {
@@ -51,7 +68,7 @@ public class Order {
     }
 
     public Order(BigDecimal totalPrice, Client client, List<Product> productList) {
-        this(client,productList);
+        this(client, productList);
         this.totalPrice = totalPrice;
     }
 

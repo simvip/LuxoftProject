@@ -1,13 +1,15 @@
 package ua.com.sliusar.services.impl;
 
-import ua.com.sliusar.dao.ClientDao;
+import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Client;
 import ua.com.sliusar.exceptions.BusinessException;
+import ua.com.sliusar.persistent.ClientStore;
+import ua.com.sliusar.persistent.Store;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.validators.ValidationService;
+import ua.com.sliusar.validators.impl.ValidationServiceImp;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Class ClientServiceImpl
@@ -16,66 +18,41 @@ import java.util.Map;
  * 2/14/19
  * @project MyLuxoftProject
  */
+@Service
 public class ClientServiceImpl implements ClientService {
-    private ClientDao clientDAO;
-    private ValidationService validationService;
+    private static final Store<Client> store = ClientStore.getInstance();
+    private static final ValidationService validationService = new ValidationServiceImp();
 
-    public ClientServiceImpl(ClientDao clientDAO, ValidationService validationService) {
-        this.clientDAO = clientDAO;
-        this.validationService = validationService;
+    public ClientServiceImpl() {
     }
 
     @Override
-    public void createClient(String name, String surname, String phone, String email, int age) {
+    public void create(Client client) {
         try {
-            validationService.validateAge(age);
-            if (!email.isEmpty()){
-                validationService.validateEmail(email);
+            validationService.validateAge(client.getAge());
+            if (client.getEmail() != null) {
+                validationService.validateEmail(client.getEmail());
             }
-            if (!phone.isEmpty()){
-                validationService.validatePhone(phone);
+            if (client.getPhone() != null) {
+                validationService.validatePhone(client.getPhone());
             }
-            Client client = new Client(name, surname, phone, email, age);
-            if (clientDAO.createOrUpdate(client)) {
-                System.out.println("Client was success created");
-            }
+            store.add(client);
+
         } catch (BusinessException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void createClient(String name, String surname, String phone) {
-        createClient(name, surname, phone, "", 0);
-    }
-
-    @Override
-    public void update(String id, Map<String, String> updateFields) {
-        Client client = clientDAO.findById(Long.valueOf(id));
-        if (client == null) {
-            System.out.println("Client with such id " + id + " doesn`t find");
-            return;
-        }
-        for (Map.Entry<String, String> pair : updateFields.entrySet()) {
-            switch (pair.getKey()) {
-                case "name":
-                    client.setName(pair.getValue());
-                    break;
-                case "phone":
-                    client.setPhone(pair.getValue());
-                    break;
-            }
-        }
-        if (clientDAO.createOrUpdate(client)) {
-            System.out.println("Client was successes updated");
-        } else {
-            System.out.println("Update was crushed");
-        }
+    public void update(Client client) {
+        store.update(client);
     }
 
     @Override
     public void delete(String id) {
-        if (clientDAO.delete(Long.valueOf(id))) {
+        Client entity = new Client();
+        entity.setId(Long.valueOf(id));
+        if (store.delete(entity)) {
             System.out.println("Client was successes deleted");
         } else {
             System.out.println("Client wasn`t deleted");
@@ -84,11 +61,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client findById(String id) {
-        return clientDAO.findById(Long.valueOf(id));
+        return store.findById(Long.valueOf(id));
     }
 
     @Override
     public List<Client> findAll() {
-        return clientDAO.findAll();
+        return store.findAll();
     }
 }

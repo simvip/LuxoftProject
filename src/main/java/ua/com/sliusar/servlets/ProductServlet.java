@@ -54,10 +54,10 @@ public class ProductServlet extends HttpServlet {
         if (mapParameters.containsKey("name")
                 && mapParameters.containsKey("price")
         ) {
-            service.create(
-                    mapParameters.get("name"),
-                    mapParameters.get("price")
-            );
+//            service.create(
+//                    mapParameters.get("name"),
+//                    mapParameters.get("price")
+//            );
         } else {
             logger.info("Wrong id");
         }
@@ -72,7 +72,7 @@ public class ProductServlet extends HttpServlet {
         }.getType();
         Map<String, String> mapParameters = new Gson().fromJson(parameter, type);
         if (mapParameters.containsKey("id")) {
-            service.update(mapParameters.get("id"), mapParameters);
+//            service.update(mapParameters.get("id"), mapParameters);
         } else {
             logger.info("Wrong id");
         }
