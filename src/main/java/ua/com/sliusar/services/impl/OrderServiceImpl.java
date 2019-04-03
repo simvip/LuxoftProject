@@ -1,11 +1,12 @@
 package ua.com.sliusar.services.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Order;
-import ua.com.sliusar.persistent.OrderStore;
 import ua.com.sliusar.persistent.Store;
 import ua.com.sliusar.services.OrderService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -15,8 +16,10 @@ import java.util.List;
  * 2/14/19
  */
 @Service
+@Transactional
 public class OrderServiceImpl implements OrderService {
-    private static final Store<Order> store = OrderStore.getInstance();
+    @Autowired
+    private Store<Order> store;
 
     public OrderServiceImpl() {
     }
@@ -33,9 +36,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void delete(String id) {
-        Order order = new Order();
-        order.setId(Long.valueOf(id));
-        store.delete(order);
+        store.delete(Long.valueOf(id));
     }
 
     @Override

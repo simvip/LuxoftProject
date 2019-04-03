@@ -1,5 +1,6 @@
 package ua.com.sliusar.validators.impl;
 
+import org.springframework.stereotype.Component;
 import ua.com.sliusar.exceptions.BusinessException;
 import ua.com.sliusar.validators.ValidationService;
 
@@ -10,6 +11,7 @@ import ua.com.sliusar.validators.ValidationService;
  * 2/15/19
  * @project MyLuxoftProject
  */
+@Component
 public class ValidationServiceImp implements ValidationService {
     @Override
     public void validateAge(int age) throws BusinessException {

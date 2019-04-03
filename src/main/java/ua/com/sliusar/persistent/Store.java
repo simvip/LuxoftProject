@@ -11,8 +11,12 @@ import java.util.List;
  */
 public interface Store<T> {
     void add(T entity);
+
     void update(T entity);
-    boolean delete(T entity);
+
+    boolean delete(long id);
+
     List<T> findAll();
+
     T findById(long id);
 }

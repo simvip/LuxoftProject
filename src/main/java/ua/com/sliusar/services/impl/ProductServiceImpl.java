@@ -1,14 +1,14 @@
 package ua.com.sliusar.services.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.exceptions.BusinessException;
-import ua.com.sliusar.persistent.ProductStore;
 import ua.com.sliusar.persistent.Store;
 import ua.com.sliusar.services.ProductService;
 import ua.com.sliusar.validators.ValidationService;
-import ua.com.sliusar.validators.impl.ValidationServiceImp;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -18,9 +18,12 @@ import java.util.List;
  * 2/15/19
  */
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService {
-    private static final Store<Product> store = ProductStore.getInstance();
-    private ValidationService validationService = new ValidationServiceImp();
+    @Autowired
+    private Store<Product> store;
+    @Autowired
+    private ValidationService validationService;
 
     public ProductServiceImpl() {
 
@@ -43,9 +46,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void delete(String id) {
-        Product entity = new Product();
-        entity.setId(Long.valueOf(id));
-        if (store.delete(entity)) {
+        if (store.delete(Long.valueOf(id))) {
             System.out.println("Product was successes deleted");
         } else {
             System.out.println("Product wasn`t deleted");

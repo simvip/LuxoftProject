@@ -3,6 +3,7 @@ package ua.com.sliusar.persistent;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.stereotype.Repository;
 import ua.com.sliusar.domain.Client;
 import ua.com.sliusar.util.UtilHibernate;
 
@@ -17,13 +18,9 @@ import java.util.function.Function;
  * 3/25/19
  * @project MyLuxoftProject
  */
+@Repository
 public class ClientStore implements Store<Client> {
     private static final Logger LOGGER = Logger.getLogger(ClientStore.class);
-    final static ClientStore INSTANCE = new ClientStore();
-
-    public static Store getInstance() {
-        return INSTANCE;
-    }
 
     public ClientStore() {
     }
@@ -42,10 +39,10 @@ public class ClientStore implements Store<Client> {
     }
 
     @Override
-    public boolean delete(Client entity) {
+    public boolean delete(long id) {
         return this.tx(session -> {
             final Query query = session.createQuery("delete from Client where id=:id");
-            query.setParameter("id", entity.getId());
+            query.setParameter("id", id);
             query.executeUpdate();
             return true;
         });

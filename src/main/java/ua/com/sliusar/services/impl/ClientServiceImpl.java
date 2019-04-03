@@ -1,14 +1,14 @@
 package ua.com.sliusar.services.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Client;
 import ua.com.sliusar.exceptions.BusinessException;
-import ua.com.sliusar.persistent.ClientStore;
 import ua.com.sliusar.persistent.Store;
 import ua.com.sliusar.services.ClientService;
 import ua.com.sliusar.validators.ValidationService;
-import ua.com.sliusar.validators.impl.ValidationServiceImp;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -19,9 +19,12 @@ import java.util.List;
  * @project MyLuxoftProject
  */
 @Service
+@Transactional
 public class ClientServiceImpl implements ClientService {
-    private static final Store<Client> store = ClientStore.getInstance();
-    private static final ValidationService validationService = new ValidationServiceImp();
+    @Autowired
+    private Store<Client> store;
+    @Autowired
+    private ValidationService validationService;
 
     public ClientServiceImpl() {
     }
@@ -50,9 +53,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void delete(String id) {
-        Client entity = new Client();
-        entity.setId(Long.valueOf(id));
-        if (store.delete(entity)) {
+        if (store.delete(Long.valueOf(id))) {
             System.out.println("Client was successes deleted");
         } else {
             System.out.println("Client wasn`t deleted");
