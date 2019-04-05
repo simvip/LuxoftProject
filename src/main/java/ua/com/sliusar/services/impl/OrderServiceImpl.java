@@ -3,10 +3,10 @@ package ua.com.sliusar.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Order;
-import ua.com.sliusar.persistent.Store;
-import ua.com.sliusar.services.OrderService;
+import ua.com.sliusar.persistent.OrderRepository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,35 +17,34 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl {
     @Autowired
-    private Store<Order> store;
+    private OrderRepository store;
 
     public OrderServiceImpl() {
     }
 
-    @Override
     public void update(Order order) {
-        store.update(order);
+        store.save(order);
     }
 
-    @Override
     public void create(Order order) {
-        store.add(order);
+        store.save(order);
     }
 
-    @Override
     public void delete(String id) {
-        store.delete(Long.valueOf(id));
+        Order order = new Order();
+        order.setId(Long.valueOf(id));
+        store.delete(order);
     }
 
-    @Override
     public Order findById(String id) {
-        return store.findById(Long.valueOf(id));
+        return store.findById(Long.valueOf(id)).get();
     }
 
-    @Override
     public List<Order> findAll() {
-        return store.findAll();
+        List<Order> orders = new ArrayList<>();
+        store.findAll().forEach(order -> orders.add(order));
+        return orders;
     }
 }

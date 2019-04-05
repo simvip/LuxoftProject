@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Client;
 import ua.com.sliusar.exceptions.BusinessException;
-import ua.com.sliusar.persistent.Store;
-import ua.com.sliusar.services.ClientService;
+import ua.com.sliusar.persistent.ClientRepository;
 import ua.com.sliusar.validators.ValidationService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +20,15 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class ClientServiceImpl implements ClientService {
+public class ClientServiceImpl {
     @Autowired
-    private Store<Client> store;
+    private ClientRepository store;
     @Autowired
     private ValidationService validationService;
 
     public ClientServiceImpl() {
     }
 
-    @Override
     public void create(Client client) {
         try {
             validationService.validateAge(client.getAge());
@@ -39,34 +38,28 @@ public class ClientServiceImpl implements ClientService {
             if (client.getPhone() != null) {
                 validationService.validatePhone(client.getPhone());
             }
-            store.add(client);
+            store.save(client);
 
         } catch (BusinessException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
     public void update(Client client) {
-        store.update(client);
+        store.save(client);
     }
 
-    @Override
     public void delete(String id) {
-        if (store.delete(Long.valueOf(id))) {
-            System.out.println("Client was successes deleted");
-        } else {
-            System.out.println("Client wasn`t deleted");
-        }
+        store.deleteById(Long.valueOf(id));
     }
 
-    @Override
     public Client findById(String id) {
-        return store.findById(Long.valueOf(id));
+        return store.findById(Long.valueOf(id)).get();
     }
 
-    @Override
     public List<Client> findAll() {
-        return store.findAll();
+        List<Client> clients = new ArrayList<>();
+        store.findAll().forEach(client -> clients.add(client));
+        return clients;
     }
 }

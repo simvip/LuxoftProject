@@ -1,9 +1,8 @@
-package ua.com.sliusar.persistent;
+package ua.com.sliusar.persistent.old;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
 import ua.com.sliusar.domain.Order;
 import ua.com.sliusar.util.UtilHibernate;
 
@@ -18,7 +17,7 @@ import java.util.function.Function;
  * 3/29/19
  * @project MyLuxoftProject
  */
-@Repository
+
 public class OrderStore implements Store<Order> {
     private static final Logger LOGGER = Logger.getLogger(OrderStore.class);
 

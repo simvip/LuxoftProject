@@ -1,10 +1,9 @@
-package ua.com.sliusar.persistent;
+package ua.com.sliusar.persistent.old;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
-import ua.com.sliusar.domain.Client;
+import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.util.UtilHibernate;
 
 import javax.persistence.Query;
@@ -12,26 +11,26 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * Class ClientStore
+ * Class ProductStore
  *
  * @author create by ivanslusar
- * 3/25/19
+ * 3/29/19
  * @project MyLuxoftProject
  */
-@Repository
-public class ClientStore implements Store<Client> {
+
+public class ProductStore implements Store<Product> {
     private static final Logger LOGGER = Logger.getLogger(ClientStore.class);
 
-    public ClientStore() {
+    public ProductStore() {
     }
 
     @Override
-    public void add(Client entity) {
+    public void add(Product entity) {
         this.tx(session -> session.save(entity));
     }
 
     @Override
-    public void update(Client entity) {
+    public void update(Product entity) {
         this.tx(session -> {
             session.update(entity);
             return true;
@@ -41,7 +40,7 @@ public class ClientStore implements Store<Client> {
     @Override
     public boolean delete(long id) {
         return this.tx(session -> {
-            final Query query = session.createQuery("delete from Client where id=:id");
+            final Query query = session.createQuery("delete from Product where id=:id");
             query.setParameter("id", id);
             query.executeUpdate();
             return true;
@@ -49,15 +48,15 @@ public class ClientStore implements Store<Client> {
     }
 
     @Override
-    public List<Client> findAll() {
-        return (List<Client>) this.tx(
-                session -> session.createQuery("from Client ").list()
+    public List<Product> findAll() {
+        return (List<Product>) this.tx(
+                session -> session.createQuery("from Product ").list()
         );
     }
 
     @Override
-    public Client findById(long id) {
-        return this.tx(session -> session.get(Client.class, id));
+    public Product findById(long id) {
+        return this.tx(session -> session.get(Product.class, id));
     }
 
     private <T> T tx(final Function<Session, T> command) {

@@ -12,4 +12,5 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan({"ua.com.sliusar"})
-public class SpringRootConfig {}
+public class SpringRootConfig {
+}

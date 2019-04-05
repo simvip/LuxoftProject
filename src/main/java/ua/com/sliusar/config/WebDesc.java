@@ -6,7 +6,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
  * Created by Ivan Sliusar on 20.07.2018.
  * Red Line Soft corp.
  */
-public class WebDesc extends AbstractAnnotationConfigDispatcherServletInitializer{
+public class WebDesc extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{SpringRootConfig.class};

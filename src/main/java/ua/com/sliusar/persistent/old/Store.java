@@ -1,4 +1,4 @@
-package ua.com.sliusar.persistent;
+package ua.com.sliusar.persistent.old;
 
 import java.util.List;
 

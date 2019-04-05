@@ -35,9 +35,9 @@ public class ClientServiceImplTest {
 
     @Before
     public void init() {
-        this.clientService = new ClientServiceImpl();
-        this.client1 = new Client(1L, "Thomas", "Jefferson", "+380974445555", "testThomas@gmail.com", 50);
-        this.client2 = new Client(2L, "Jimmy", "Carter", "+380504445551", "testJimmy@gmail.com", 50);
+//        this.clientService = new ClientServiceImpl();
+//        this.client1 = new Client(1L, "Thomas", "Jefferson", "+380974445555", "testThomas@gmail.com", 50);
+//        this.client2 = new Client(2L, "Jimmy", "Carter", "+380504445551", "testJimmy@gmail.com", 50);
     }
 
     @Test

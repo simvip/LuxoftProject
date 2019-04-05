@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.com.sliusar.domain.Product;
 import ua.com.sliusar.exceptions.BusinessException;
-import ua.com.sliusar.persistent.Store;
-import ua.com.sliusar.services.ProductService;
+import ua.com.sliusar.persistent.ProductRepository;
 import ua.com.sliusar.validators.ValidationService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,9 +19,9 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl {
     @Autowired
-    private Store<Product> store;
+    private ProductRepository store;
     @Autowired
     private ValidationService validationService;
 
@@ -29,38 +29,31 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
-    @Override
     public void create(Product product) {
         try {
             validationService.validateBigDecimal(product.getPrice().toString());
-            store.add(product);
+            store.save(product);
         } catch (BusinessException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
     public void update(Product product) {
-        store.update(product);
+        store.save(product);
     }
 
-    @Override
     public void delete(String id) {
-        if (store.delete(Long.valueOf(id))) {
-            System.out.println("Product was successes deleted");
-        } else {
-            System.out.println("Product wasn`t deleted");
-        }
+        store.deleteById(Long.valueOf(id));
     }
 
-    @Override
     public Product findById(String id) {
-        return store.findById(Long.valueOf(id));
+        return store.findById(Long.valueOf(id)).get();
     }
 
-    @Override
     public List<Product> findAll() {
-        return store.findAll();
+        List<Product> products = new ArrayList<>();
+        store.findAll().forEach(product -> products.add(product));
+        return products;
     }
 
 }
